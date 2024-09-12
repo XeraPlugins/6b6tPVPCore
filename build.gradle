@@ -1,0 +1,35 @@
+plugins {
+    id 'java'
+    id "com.github.johnrengelman.shadow" version "8.1.1"
+}
+
+group = 'me.ian'
+version = '1.0-BETA'
+sourceCompatibility = 11
+targetCompatibility = 11
+
+repositories {
+    mavenCentral()
+    maven { url "https://repo.txmc.me/releases" }
+}
+
+dependencies {
+    compileOnly "com.destroystokyo.paper:paper-jar:1.12.2-R0.1-SNAPSHOT"
+    implementation "org.projectlombok:lombok:1.18.28"
+    annotationProcessor "org.projectlombok:lombok:1.18.28"
+    implementation "com.moandjiezana.toml:toml4j:0.7.2"
+}
+
+processResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    File file = new File("src/main/resources")
+    from(file).include("*")
+}
+
+tasks {
+    shadowJar {
+        includeEmptyDirs = false
+        destinationDirectory.set(file("C:\\Users\\Ian\\Documents\\TestServer\\plugins"))
+        minimize()
+    }
+}
