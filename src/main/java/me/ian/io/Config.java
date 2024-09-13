@@ -2,6 +2,7 @@ package me.ian.io;
 
 import com.moandjiezana.toml.Toml;
 import com.moandjiezana.toml.TomlWriter;
+import lombok.Getter;
 import me.ian.PVPHelper;
 
 import java.io.File;
@@ -17,6 +18,8 @@ public class Config {
 
     private final File configFile;
     // No need to add getters/setters for these
+
+    @Getter
     private Toml toml;
     private Map<String, Object> configData;
 
@@ -45,16 +48,6 @@ public class Config {
         FileReader fileReader = new FileReader(configFile);
         this.toml = new Toml().read(fileReader);
         this.configData = toml.toMap();
-    }
-
-    // Retrieve a value based on a given key
-    public Object getValue(String key) {
-        return configData.get(key);
-    }
-
-    // Add or update key-value pairs in the configuration
-    public void setValue(String key, Object value) {
-        configData.put(key, value);
     }
 
     // Save the config back to the TOML file

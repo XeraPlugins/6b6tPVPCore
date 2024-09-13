@@ -1,1 +1,5 @@
 msg_prefix = "&6[&b6b6tPVP&r&6]&r "
+
+[tablist]
+header = "6b6tPVP"
+footer = "This is a test line"

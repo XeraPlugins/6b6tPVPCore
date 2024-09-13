@@ -7,3 +7,6 @@ api-version: 1.12.2
 loadbefore:
   - WorldGuard
   - Multiverse-Core
+commands:
+  test:
+    description: test command
