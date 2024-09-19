@@ -1,19 +1,27 @@
 package me.ian;
 
-import com.moandjiezana.toml.Toml;
+import lombok.Getter;
+import me.ian.command.CommandRegistrar;
 import me.ian.io.Config;
-import me.ian.tab.TabList;
+import me.ian.tab.TabListUpdater;
+import me.ian.time.TaskRegistrar;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * @author SevJ6
  */
 public class PVPHelper extends JavaPlugin {
 
+    public static final long START_TIME = System.currentTimeMillis();
+    public static final ScheduledExecutorService EXECUTOR_SERVICE = Executors.newScheduledThreadPool(3);
     public static PVPHelper INSTANCE;
     private Config config;
+
+    @Getter
+    private CommandRegistrar commandRegistrar;
 
     // Return the custom Toml configuration
     public Config getRunningConfig() {
@@ -24,13 +32,9 @@ public class PVPHelper extends JavaPlugin {
     public void onEnable() {
         INSTANCE = this;
         config = new Config("config.toml");
-
-        getCommand("test").setExecutor(((sender, command, label, args) -> {
-            TabList tabList = config.getToml().getTable("tablist").to(TabList.class);
-            System.out.println(tabList.getHeader());
-            System.out.println(tabList.getFooter());
-            return true;
-        }));
+        commandRegistrar = new CommandRegistrar();
+        commandRegistrar.registerAllCommands();
+        TaskRegistrar.register(TabListUpdater.class);
     }
 
     @Override

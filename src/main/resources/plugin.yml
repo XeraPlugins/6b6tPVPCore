@@ -8,5 +8,9 @@ loadbefore:
   - WorldGuard
   - Multiverse-Core
 commands:
-  test:
-    description: test command
+  reloadconfig:
+    description: "reloads the running configuration file"
+    aliases:
+      - rlc
+      - rlconf
+    usage: "/reloadconfig"
