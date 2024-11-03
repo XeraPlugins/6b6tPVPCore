@@ -5,8 +5,6 @@ plugins {
 
 group = 'me.ian'
 version = '1.0-BETA'
-sourceCompatibility = 11
-targetCompatibility = 11
 
 repositories {
     mavenCentral()
@@ -29,7 +27,31 @@ processResources {
 tasks {
     shadowJar {
         includeEmptyDirs = false
-        destinationDirectory.set(file("C:\\Users\\Ian\\Documents\\TestServer\\plugins"))
         minimize()
     }
+}
+
+tasks.register("copyToTestServer") {
+    doLast {
+        def jarFile = file("${buildDir}/libs/PVPHelper-1.0-BETA-all.jar")
+        def testServerDir = "C:/Users/Ian/Documents/TestServer/plugins"
+        def destinationDir = file(testServerDir)
+
+        if (jarFile.exists()) {
+            copy {
+                from jarFile
+                into destinationDir
+            }
+            println("Copied ${jarFile} to ${destinationDir}")
+        } else {
+            println("JAR file not found at ${jarFile}")
+        }
+    }
+}
+
+// Ensure the copy task runs after the shadowJar task
+tasks.shadowJar.finalizedBy(tasks.copyToTestServer)
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
 }

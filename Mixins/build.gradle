@@ -1,0 +1,57 @@
+plugins {
+    id 'java'
+    id "com.github.johnrengelman.shadow" version "8.1.1"
+}
+
+group = 'me.ian'
+version = '1.0-BETA'
+sourceCompatibility = 11
+targetCompatibility = 11
+
+repositories {
+    mavenCentral()
+    maven { url "https://repo.txmc.me/releases" }
+}
+
+dependencies {
+    implementation "me.txmc:rtmixin:1.5.5-BETA"
+    compileOnly "com.destroystokyo.paper:paper-jar:1.12.2-R0.1-SNAPSHOT"
+    compileOnly "org.projectlombok:lombok:1.18.24"
+    annotationProcessor "org.projectlombok:lombok:1.18.24"
+}
+
+tasks.shadowJar {
+    manifest {
+        attributes(
+                "Manifest-Version": "1.0",
+                "Premain-Class": "me.txmc.rtmixin.jagent.AgentMain",
+                "Agent-Class": "me.txmc.rtmixin.jagent.AgentMain",
+                "Can-Redefine-Classes": "true",
+                "Can-Retransform-Classes": "true",
+                "Can-Set-Native-Method-Prefix": "true"
+        )
+    }
+    doLast {
+        def pluginResources = new File(projectDir as File, "src/main/resources")
+        def mixinLibs = new File(buildDir as File, "libs")
+
+        pluginResources.listFiles()?.findAll { it.name == "mixins.dat" }?.each { it.delete() }
+
+        mixinLibs.listFiles()?.findAll { it.name.endsWith("-all.jar") }?.each { file ->
+            def newFile = new File(pluginResources, "mixins.dat")
+            if (newFile.exists()) {
+                newFile.delete()
+                println("Deleted old mixin file ${newFile.name}")
+            }
+            file.withInputStream { input ->
+                newFile.withOutputStream { output ->
+                    output << input
+                }
+            }
+            println("Copied a file ${newFile.absolutePath}")
+        }
+    }
+}
+
+
+
