@@ -1,0 +1,5 @@
+msg_prefix = "&6[&b6b6tPVP&r&6]&r "
+
+[tablist]
+header = "\n&b6b6tPVP\n"
+footer = "\n  %tps% &btps - %players% players - %ping% ping - %uptime% uptime  \n"

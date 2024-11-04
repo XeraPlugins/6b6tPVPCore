@@ -1,2 +1,4 @@
 rootProject.name = 'PVPHelper'
 include 'Mixins'
+include 'Plugin'
+

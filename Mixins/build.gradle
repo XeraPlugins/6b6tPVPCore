@@ -5,8 +5,14 @@ plugins {
 
 group = 'me.ian'
 version = '1.0-BETA'
-sourceCompatibility = 11
-targetCompatibility = 11
+java.targetCompatibility = 1.8
+java.sourceCompatibility = 1.8
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
+}
 
 repositories {
     mavenCentral()
@@ -14,7 +20,7 @@ repositories {
 }
 
 dependencies {
-    implementation "me.txmc:rtmixin:1.5.5-BETA"
+    implementation "me.txmc:rtmixin:1.5.1-BETA"
     compileOnly "com.destroystokyo.paper:paper-jar:1.12.2-R0.1-SNAPSHOT"
     compileOnly "org.projectlombok:lombok:1.18.24"
     annotationProcessor "org.projectlombok:lombok:1.18.24"
@@ -32,12 +38,13 @@ tasks.shadowJar {
         )
     }
     doLast {
-        def pluginResources = new File(projectDir as File, "src/main/resources")
-        def mixinLibs = new File(buildDir as File, "libs")
+        def pluginProj = project(":Plugin")
+        def pluginResources = new File(pluginProj.projectDir, "src/main/resources")
+        def mixinLibs = new File(buildDir, "libs")
 
         pluginResources.listFiles()?.findAll { it.name == "mixins.dat" }?.each { it.delete() }
 
-        mixinLibs.listFiles()?.findAll { it.name.endsWith("-all.jar") }?.each { file ->
+        mixinLibs.listFiles()?.findAll { fi -> fi.name.endsWith("-all.jar") }?.each { file ->
             def newFile = new File(pluginResources, "mixins.dat")
             if (newFile.exists()) {
                 newFile.delete()
@@ -51,6 +58,7 @@ tasks.shadowJar {
             println("Copied a file ${newFile.absolutePath}")
         }
     }
+
 }
 
 

@@ -1,0 +1,65 @@
+plugins {
+    id 'java'
+    id "com.github.johnrengelman.shadow" version "8.1.1"
+}
+
+group = 'me.ian'
+version = '1.0-BETA'
+java.targetCompatibility = 1.8
+java.sourceCompatibility = 1.8
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
+}
+
+
+repositories {
+    mavenCentral()
+    maven { url "https://repo.txmc.me/releases" }
+}
+
+dependencies {
+    compileOnly "com.destroystokyo.paper:paper-jar:1.12.2-R0.1-SNAPSHOT"
+    implementation "me.txmc:protocolapi:1.2-SNAPSHOT"
+    implementation "org.projectlombok:lombok:1.18.28"
+    annotationProcessor "org.projectlombok:lombok:1.18.28"
+    implementation "com.moandjiezana.toml:toml4j:0.7.2"
+}
+
+processResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    File resources = new File("src/main/resources")
+    from("META-INF").exclude("maven/*")
+    from(resources).include("*")
+}
+
+tasks {
+    shadowJar {
+        includeEmptyDirs = false
+        minimize()
+    }
+}
+
+tasks.register("copyToTestServer") {
+    doLast {
+        def jarFile = file("${buildDir}/libs/Plugin-1.0-BETA-all.jar")
+        def testServerDir = file("C:/Users/Ian/Documents/TestServer/plugins")
+
+        if (jarFile.exists()) {
+            copy {
+                from jarFile
+                into testServerDir
+            }
+            println("Copied ${jarFile} to ${testServerDir}")
+        } else {
+            println("JAR file not found at ${jarFile}")
+        }
+    }
+}
+
+// Ensure the copy task runs after the shadowJar task
+tasks.named("shadowJar") {
+    finalizedBy("copyToTestServer")
+}

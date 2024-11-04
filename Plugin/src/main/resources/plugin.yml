@@ -1,0 +1,16 @@
+name: PVPHelper
+main: me.ian.PVPHelper
+version: 1.0-BETA
+description: Plugin for 6b6tPVP
+author: SevJ6
+api-version: 1.12.2
+loadbefore:
+  - WorldGuard
+  - Multiverse-Core
+commands:
+  reloadconfig:
+    description: "reloads the running configuration file"
+    aliases:
+      - rlc
+      - rlconf
+    usage: "/reloadconfig"
