@@ -3,7 +3,9 @@ package me.ian.command;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import me.ian.PVPHelper;
+import me.ian.command.commands.FacePlayer;
 import me.ian.command.commands.ReloadConfig;
+import me.ian.command.commands.SpawnNPC;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
@@ -19,16 +21,18 @@ import java.util.logging.Level;
  */
 @RequiredArgsConstructor
 @Getter
-public class CommandRegistrar {
+public class CommandRegister {
 
     private final List<CommandData> commands;
 
-    public CommandRegistrar() {
+    public CommandRegister() {
         commands = new ArrayList<>();
         commands.add(new ReloadConfig());
+        commands.add(new FacePlayer());
+        commands.add(new SpawnNPC());
     }
 
-    public void registerAllCommands() {
+    public void registerCommands() {
         commands.forEach(this::registerCommand);
     }
 

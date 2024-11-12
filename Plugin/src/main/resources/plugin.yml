@@ -9,8 +9,14 @@ loadbefore:
   - Multiverse-Core
 commands:
   reloadconfig:
-    description: "reloads the running configuration file"
+    description: "reloads the running configuration config"
     aliases:
       - rlc
       - rlconf
     usage: "/reloadconfig"
+  faceplayer:
+    description: "faces two players towards each other"
+    usage: "/faceplayer [player]"
+  spawnnpc:
+    description: "spawn a non-playable character"
+    usage: "/spawnnpc"

@@ -1,4 +1,4 @@
-package me.ian.file;
+package me.ian;
 
 import com.moandjiezana.toml.Toml;
 import com.moandjiezana.toml.TomlWriter;
@@ -20,7 +20,7 @@ public class Config {
     @Getter
     private Toml toml;
 
-    // Constructor to create or load a new TOML file
+    // Constructor to create or load a new TOML config
     public Config(String name) {
         File dataFolder = PVPHelper.INSTANCE.getDataFolder();
         if (!dataFolder.exists()) dataFolder.mkdir();
@@ -28,7 +28,7 @@ public class Config {
         this.configFile = new File(dataFolder, name);
         try {
             if (configFile.exists()) {
-                loadConfig();  // Load the existing TOML file
+                loadConfig();  // Load the existing TOML config
             } else {
                 // Load and save the default config
                 this.toml = new Toml().read(PVPHelper.class.getResourceAsStream("/config.toml"));
@@ -39,14 +39,14 @@ public class Config {
         }
     }
 
-    // Method to load an existing TOML file
+    // Method to load an existing TOML config
     @SneakyThrows
     public void loadConfig() {
         FileReader fileReader = new FileReader(configFile);
         this.toml = new Toml().read(fileReader);
     }
 
-    // Save the config back to the TOML file
+    // Save the config back to the TOML config
     @SneakyThrows
     public void saveConfig() {
         TomlWriter tomlWriter = new TomlWriter();

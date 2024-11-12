@@ -12,7 +12,6 @@ public class MixinCreeper {
     @Inject(info = @MethodInfo(_class = EntityCreeper.class, name = "<init>", sig = World.class, rtype = void.class), at = @At(pos = At.Position.TAIL))
     public static void mixinCreeper(CallbackInfo ci) {
         EntityCreeper creeper = (EntityCreeper) ci.getSelf();
-        creeper.setPowered(true);
         creeper.maxFuseTicks = 0;
     }
 }

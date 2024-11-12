@@ -1,6 +1,8 @@
 package me.ian.mixin;
 
 import me.ian.mixin.mixins.MixinCreeper;
+import me.ian.mixin.mixins.MixinEntityPlayer;
+import me.ian.mixin.mixins.MixinMinecraftServer;
 import me.txmc.rtmixin.RtMixin;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -16,6 +18,8 @@ public class MixinMain {
         long start = System.currentTimeMillis();
         // process mixins
         RtMixin.processMixins(MixinCreeper.class);
+        RtMixin.processMixins(MixinMinecraftServer.class);
+        RtMixin.processMixins(MixinEntityPlayer.class);
         plugin.getLogger().info(translate("&3Preformed all mixins in&r&a %dms&r", (System.currentTimeMillis() - start)));
     }
 

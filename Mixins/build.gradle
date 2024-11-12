@@ -48,14 +48,14 @@ tasks.shadowJar {
             def newFile = new File(pluginResources, "mixins.dat")
             if (newFile.exists()) {
                 newFile.delete()
-                println("Deleted old mixin file ${newFile.name}")
+                println("Deleted old mixin config ${newFile.name}")
             }
             file.withInputStream { input ->
                 newFile.withOutputStream { output ->
                     output << input
                 }
             }
-            println("Copied a file ${newFile.absolutePath}")
+            println("Copied a config ${newFile.absolutePath}")
         }
     }
 

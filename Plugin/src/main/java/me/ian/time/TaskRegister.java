@@ -3,7 +3,7 @@ package me.ian.time;
 import lombok.SneakyThrows;
 import me.ian.PVPHelper;
 import me.ian.exception.MethodNotStaticException;
-import me.ian.util.Utils;
+import me.ian.utils.Utils;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -13,7 +13,7 @@ import java.util.logging.Level;
 /**
  * @author SevJ6
  */
-public class TaskRegistrar {
+public class TaskRegister {
 
     @SneakyThrows
     public static void register(Class<?>... classes) {

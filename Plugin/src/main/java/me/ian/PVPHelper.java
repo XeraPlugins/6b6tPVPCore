@@ -1,11 +1,13 @@
 package me.ian;
 
 import lombok.Getter;
-import me.ian.command.CommandRegistrar;
-import me.ian.file.Config;
-import me.ian.tab.CreeperTroll;
-import me.ian.tab.TabListUpdater;
-import me.ian.time.TaskRegistrar;
+import me.ian.command.CommandRegister;
+import me.ian.event.EventRegister;
+import me.ian.lobby.npc.NPCManager;
+import me.ian.lobby.world.VoidWorld;
+import me.ian.time.TaskRegister;
+import me.ian.time.schedulers.TabListUpdater;
+import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -28,11 +30,26 @@ public class PVPHelper extends JavaPlugin {
     private Config config;
 
     @Getter
-    private CommandRegistrar commandRegistrar;
+    private CommandRegister commandRegister;
+
+    @Getter
+    private EventRegister eventRegister;
+
+    @Getter
+    private ScheduledExecutorService executorService;
+
+    @Getter
+    private NPCManager npcManager;
 
     // Return the custom Toml configuration
     public Config getRunningConfig() {
         return config;
+    }
+
+    // custom world generation to generate nothing but air blocks for Multiverse-Core
+    @Override
+    public ChunkGenerator getDefaultWorldGenerator(String worldName, String id) {
+        return new VoidWorld();
     }
 
     @Override
@@ -40,10 +57,13 @@ public class PVPHelper extends JavaPlugin {
         INSTANCE = this;
         loadMixins();
         config = new Config("config.toml");
-        commandRegistrar = new CommandRegistrar();
-        commandRegistrar.registerAllCommands();
-        TaskRegistrar.register(TabListUpdater.class);
-        TaskRegistrar.register(CreeperTroll.class);
+        executorService = Executors.newScheduledThreadPool(4);
+        commandRegister = new CommandRegister();
+        commandRegister.registerCommands();
+        eventRegister = new EventRegister();
+        eventRegister.registerEvents();
+        npcManager = new NPCManager();
+        TaskRegister.register(TabListUpdater.class);
     }
 
     @Override

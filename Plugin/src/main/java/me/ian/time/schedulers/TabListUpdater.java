@@ -1,8 +1,9 @@
-package me.ian.tab;
+package me.ian.time.schedulers;
 
+import com.moandjiezana.toml.Toml;
 import me.ian.PVPHelper;
 import me.ian.time.ScheduledTask;
-import me.ian.util.Utils;
+import me.ian.utils.Utils;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -17,10 +18,10 @@ public class TabListUpdater {
 
     @ScheduledTask
     public static void updateTablist() {
-        TabList tabList = PVPHelper.INSTANCE.getRunningConfig().getToml().getTable("tablist").to(TabList.class);
+        Toml toml = PVPHelper.INSTANCE.getRunningConfig().getToml().getTable("tablist");
         Bukkit.getOnlinePlayers().forEach(player -> {
-            TextComponent componentHeader = new TextComponent(parsePlaceHolders(tabList.getHeader(), player));
-            TextComponent componentFooter = new TextComponent(parsePlaceHolders(tabList.getFooter(), player));
+            TextComponent componentHeader = new TextComponent(parsePlaceHolders(toml.getString("header"), player));
+            TextComponent componentFooter = new TextComponent(parsePlaceHolders(toml.getString("footer"), player));
             player.setPlayerListHeaderFooter(componentHeader, componentFooter);
         });
     }
