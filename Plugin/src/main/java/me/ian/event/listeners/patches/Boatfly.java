@@ -44,7 +44,7 @@ public class Boatfly extends ViolationManager implements PacketListener, Listene
             if (getVLS(player.getUniqueId().hashCode()) > 15) {
                 event.setCancelled(true);
                 entity.die();
-                PVPHelper.INSTANCE.getLogger().log(Level.INFO, String.format("[Boatfly] Stopped %s from boatflying", player));
+                PVPHelper.INSTANCE.getLogger().log(Level.INFO, String.format("[Boatfly] Stopped %s from boatflying", player.getName()));
             }
         }
     }

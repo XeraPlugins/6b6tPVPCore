@@ -3,6 +3,7 @@ package me.ian.command;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import me.ian.PVPHelper;
+import me.ian.command.commands.CreateArena;
 import me.ian.command.commands.FacePlayer;
 import me.ian.command.commands.ReloadConfig;
 import me.ian.command.commands.SpawnNPC;
@@ -29,6 +30,7 @@ public class CommandManager {
         commands.add(new ReloadConfig());
         commands.add(new FacePlayer());
         commands.add(new SpawnNPC());
+        commands.add(new CreateArena());
     }
 
     public void registerCommands() {

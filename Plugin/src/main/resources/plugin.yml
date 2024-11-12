@@ -4,9 +4,6 @@ version: 1.0-BETA
 description: Plugin for 6b6tPVP
 author: SevJ6
 api-version: 1.12.2
-loadbefore:
-  - WorldGuard
-  - Multiverse-Core
 softdepend: ["PlaceholderAPI"]
 commands:
   reloadconfig:
@@ -21,3 +18,6 @@ commands:
   spawnnpc:
     description: "spawn a non-playable character"
     usage: "/spawnnpc"
+  createarena:
+    description: "create a new arena within two points"
+    usage: "/createarena [name]"

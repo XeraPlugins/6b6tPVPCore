@@ -1,6 +1,7 @@
 package me.ian;
 
 import lombok.Getter;
+import me.ian.arena.ArenaManager;
 import me.ian.command.CommandManager;
 import me.ian.event.EventManager;
 import me.ian.lobby.npc.NPCManager;
@@ -41,6 +42,9 @@ public class PVPHelper extends JavaPlugin {
     private List<ViolationManager> violationManagers;
 
     @Getter
+    private ArenaManager arenaManager;
+
+    @Getter
     private CommandManager commandRegister;
 
     @Getter
@@ -73,6 +77,7 @@ public class PVPHelper extends JavaPlugin {
         dispatcher = new PacketEventDispatcher(this);
         violationManagers = new ArrayList<>();
         EXECUTOR_SERVICE.scheduleAtFixedRate(() -> violationManagers.forEach(ViolationManager::decrementAll), 0, 1, TimeUnit.SECONDS);
+        arenaManager = new ArenaManager();
         commandRegister = new CommandManager();
         commandRegister.registerCommands();
         eventRegister = new EventManager();

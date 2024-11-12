@@ -1,9 +1,11 @@
 package me.ian.event;
 
 import me.ian.PVPHelper;
+import me.ian.arena.ArenaManager;
 import me.ian.event.listeners.PlayerDeathListener;
 import me.ian.event.listeners.patches.*;
 import me.ian.event.listeners.ItemRevertListener;
+import me.ian.lobby.LobbyProtection;
 import org.bukkit.event.Listener;
 
 import java.util.ArrayList;
@@ -27,6 +29,8 @@ public class EventManager {
         listeners.add(new ProjectileVelocity());
         listeners.add(new DispenserCrash());
         listeners.add(new ItemRevertListener());
+        listeners.add(new LobbyProtection());
+        listeners.add(PVPHelper.INSTANCE.getArenaManager());
     }
 
     public void registerEvents() {
