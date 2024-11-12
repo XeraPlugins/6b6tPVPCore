@@ -1,7 +1,6 @@
 package me.ian.lobby.npc;
 
 import me.ian.PVPHelper;
-import me.ian.utils.PlayerUtils;
 import me.ian.utils.Utils;
 import net.minecraft.server.v1_12_R1.EntityPlayer;
 import org.bukkit.Bukkit;
@@ -15,10 +14,11 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * @author SevJ6
+ */
 public class NPCManager implements Listener {
 
     private final List<NPC> npcs = new ArrayList<>();

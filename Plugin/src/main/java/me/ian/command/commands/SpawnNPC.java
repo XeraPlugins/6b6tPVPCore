@@ -9,6 +9,9 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+/**
+ * @author SevJ6
+ */
 public class SpawnNPC extends PluginCommand implements CommandExecutor {
     public SpawnNPC() {
         super("spawnnpc", true);
@@ -18,7 +21,7 @@ public class SpawnNPC extends PluginCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         Player player = (Player) sender;
         String[] textures = PlayerUtils.getSkinProperties("8e176c5ac26d4c148efe77b598b8b3ea");
-        Cashier cashier = new Cashier(player.getLocation(), "CashierNigga", textures[0], textures[1], true);
+        Cashier cashier = new Cashier(player.getLocation(), "CashierTest", textures[0], textures[1], true);
         PVPHelper.INSTANCE.getNpcManager().addNPC(cashier);
         return true;
     }

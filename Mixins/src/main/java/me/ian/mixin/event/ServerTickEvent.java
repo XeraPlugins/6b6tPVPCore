@@ -7,6 +7,9 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+/**
+ * @author SevJ6
+ */
 @RequiredArgsConstructor
 @Getter
 public class ServerTickEvent extends Event implements Cancellable {

@@ -8,6 +8,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+/**
+ * @author SevJ6
+ */
 public class Cashier extends NPC {
     public Cashier(Location location, String name, String texture, String signature, boolean shouldFacePlayers) {
         super(location, name, texture, signature, shouldFacePlayers);

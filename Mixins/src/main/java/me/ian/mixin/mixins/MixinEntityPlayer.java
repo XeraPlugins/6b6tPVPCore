@@ -9,6 +9,9 @@ import net.minecraft.server.v1_12_R1.DamageSource;
 import net.minecraft.server.v1_12_R1.EntityPlayer;
 import org.bukkit.Bukkit;
 
+/**
+ * @author SevJ6
+ */
 public class MixinEntityPlayer {
 
     @Inject(info = @MethodInfo(_class = EntityPlayer.class, name = "die", sig = DamageSource.class, rtype = void.class), at = @At(pos = At.Position.HEAD))

@@ -7,6 +7,9 @@ import org.bukkit.event.Listener;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author SevJ6
+ */
 public class EventManager {
 
     private final List<Listener> listeners;

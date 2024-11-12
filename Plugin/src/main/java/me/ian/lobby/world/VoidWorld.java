@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * @author SevJ6
+ */
 public class VoidWorld extends ChunkGenerator {
 
     List<BlockPopulator> populators = new ArrayList<>();

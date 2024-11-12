@@ -10,6 +10,9 @@ import me.txmc.rtmixin.mixin.MethodInfo;
 import net.minecraft.server.v1_12_R1.MinecraftServer;
 import org.bukkit.Bukkit;
 
+/**
+ * @author SevJ6
+ */
 public class MixinMinecraftServer {
 
     @Inject(info = @MethodInfo(_class = MinecraftServer.class, name = "C", rtype = void.class), at = @At(pos = At.Position.HEAD))

@@ -11,6 +11,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+/**
+ * @author SevJ6
+ */
 public class PlayerUtils {
 
     public static void facePlayersTowardsEachOther(Player player1, Player player2) {

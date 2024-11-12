@@ -9,6 +9,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.instrument.Instrumentation;
 
+/**
+ * @author SevJ6
+ * credit to 254n_m
+ */
 public class MixinMain {
 
     public void init(JavaPlugin plugin) throws Throwable {

@@ -10,6 +10,9 @@ import org.bukkit.entity.Player;
 import java.io.*;
 import java.lang.reflect.Method;
 
+/**
+ * @author SevJ6
+ */
 public class NBTUtils {
 
     private static Method loadM;

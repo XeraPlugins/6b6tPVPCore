@@ -18,6 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * @author SevJ6
+ */
 @Getter
 @Setter
 public class NPC {
