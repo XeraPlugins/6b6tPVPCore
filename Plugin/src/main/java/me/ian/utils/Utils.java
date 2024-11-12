@@ -26,12 +26,6 @@ import java.util.Random;
  */
 public class Utils {
 
-    public static String getCurrentDate() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-        LocalDate currentDate = LocalDate.now();
-        return currentDate.format(formatter);
-    }
-
     public static void sendMessage(Object recipient, String message) {
         message = translateChars(message);
         if (recipient instanceof Player) ((Player) recipient).sendMessage(message);
@@ -67,12 +61,12 @@ public class Utils {
         });
     }
 
-    public static EntityPlayer getHandle(Player player) {
-        return ((CraftPlayer) player).getHandle();
+    public static void broadcastMessage(String message) {
+        Bukkit.broadcastMessage(translateChars(message));
     }
 
-    public static String translateColorCodes(String input) {
-        return ChatColor.translateAlternateColorCodes('&', input);
+    public static EntityPlayer getHandle(Player player) {
+        return ((CraftPlayer) player).getHandle();
     }
 
     public static void generateVillage(World world, Random random, Chunk chunk) {

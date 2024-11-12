@@ -1,5 +1,7 @@
 package me.ian.event.listeners;
 
+import com.moandjiezana.toml.Toml;
+import me.ian.Config;
 import me.ian.PVPHelper;
 import me.ian.mixin.event.PlayerPreDeathEvent;
 import me.ian.utils.Utils;
@@ -51,10 +53,11 @@ public class PlayerDeathListener implements Listener {
                         EntityDamageByEntityEvent crystalDamageEvent = (EntityDamageByEntityEvent) crystal.getLastDamageCause();
                         if (crystalDamageEvent.getDamager() instanceof Player) {
                             Player crystalHitter = (Player) crystalDamageEvent.getDamager();
+                            Toml config = PVPHelper.INSTANCE.getRunningConfig().getToml();
                             if (Objects.equals(crystalHitter, player)) {
-                                Bukkit.broadcastMessage(Utils.translateChars(String.format("&3%s&r &4committed suicide with an &6End Crystal", player.getName())));
+                                Utils.broadcastMessage(config.getString("crystal_player_suicide").replace("%victim%", player.getName()));
                             } else {
-                                Bukkit.broadcastMessage(Utils.translateChars(String.format("&3%s&r &4killed &3%s&r &4with an &6End Crystal", crystalHitter.getName(), player.getName())));
+                                Utils.broadcastMessage(config.getString("crystal_player_kill").replace("%killer%", crystalHitter.getName()).replace("%victim%", player.getName()));
                             }
                         }
                     }

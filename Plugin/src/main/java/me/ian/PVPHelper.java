@@ -59,6 +59,11 @@ public class PVPHelper extends JavaPlugin {
         INSTANCE = this;
         loadMixins();
         config = new Config("config.toml");
+
+        if (getServer().getPluginManager().getPlugin("PlaceholderAPI") == null) {
+            getLogger().warning("PlaceholderAPI is not installed!");
+        }
+
         executorService = Executors.newScheduledThreadPool(4);
         commandRegister = new CommandRegister();
         commandRegister.registerCommands();
