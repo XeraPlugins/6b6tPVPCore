@@ -1,13 +1,11 @@
 package me.ian;
 
 import lombok.Getter;
-import me.clip.placeholderapi.PlaceholderAPI;
-import me.clip.placeholderapi.PlaceholderAPIPlugin;
-import me.ian.command.CommandRegister;
-import me.ian.event.EventRegister;
+import me.ian.command.CommandManager;
+import me.ian.event.EventManager;
 import me.ian.lobby.npc.NPCManager;
 import me.ian.lobby.world.VoidWorld;
-import me.ian.time.TaskRegister;
+import me.ian.time.TaskManager;
 import me.ian.time.schedulers.TabListUpdater;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -32,13 +30,10 @@ public class PVPHelper extends JavaPlugin {
     private Config config;
 
     @Getter
-    private CommandRegister commandRegister;
+    private CommandManager commandRegister;
 
     @Getter
-    private EventRegister eventRegister;
-
-    @Getter
-    private ScheduledExecutorService executorService;
+    private EventManager eventRegister;
 
     @Getter
     private NPCManager npcManager;
@@ -64,13 +59,12 @@ public class PVPHelper extends JavaPlugin {
             getLogger().warning("PlaceholderAPI is not installed!");
         }
 
-        executorService = Executors.newScheduledThreadPool(4);
-        commandRegister = new CommandRegister();
+        commandRegister = new CommandManager();
         commandRegister.registerCommands();
-        eventRegister = new EventRegister();
+        eventRegister = new EventManager();
         eventRegister.registerEvents();
         npcManager = new NPCManager();
-        TaskRegister.register(TabListUpdater.class);
+        TaskManager.register(TabListUpdater.class);
     }
 
     @Override

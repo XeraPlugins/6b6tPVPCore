@@ -1,6 +1,6 @@
 package me.ian.command.commands;
 
-import me.ian.command.CommandData;
+import me.ian.command.PluginCommand;
 import me.ian.utils.PlayerUtils;
 import me.ian.utils.Utils;
 import org.bukkit.Bukkit;
@@ -9,7 +9,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class FacePlayer extends CommandData implements CommandExecutor {
+public class FacePlayer extends PluginCommand implements CommandExecutor {
 
     public FacePlayer() {
         super("faceplayer", true);

@@ -7,11 +7,11 @@ import org.bukkit.event.Listener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EventRegister {
+public class EventManager {
 
     private final List<Listener> listeners;
 
-    public EventRegister() {
+    public EventManager() {
         listeners = new ArrayList<>();
 
         // add listeners

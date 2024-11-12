@@ -8,7 +8,7 @@ import org.bukkit.command.CommandExecutor;
  * @author SevJ6
  */
 @Getter
-public class CommandData {
+public class PluginCommand {
 
     private final String commandName;
     private final boolean adminOnly;
@@ -16,7 +16,7 @@ public class CommandData {
     @Setter
     private CommandExecutor commandExecutor;
 
-    public CommandData(String commandName, boolean adminOnly) {
+    public PluginCommand(String commandName, boolean adminOnly) {
         this.commandName = commandName;
         this.adminOnly = adminOnly;
         commandExecutor = (CommandExecutor) this;

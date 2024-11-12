@@ -13,7 +13,7 @@ import java.util.logging.Level;
 /**
  * @author SevJ6
  */
-public class TaskRegister {
+public class TaskManager {
 
     @SneakyThrows
     public static void register(Class<?>... classes) {

@@ -1,7 +1,7 @@
 package me.ian.command.commands;
 
 import me.ian.PVPHelper;
-import me.ian.command.CommandData;
+import me.ian.command.PluginCommand;
 import me.ian.utils.Utils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -10,7 +10,7 @@ import org.bukkit.command.CommandSender;
 /**
  * @author SevJ6
  */
-public class ReloadConfig extends CommandData implements CommandExecutor {
+public class ReloadConfig extends PluginCommand implements CommandExecutor {
 
     public ReloadConfig() {
         super("reloadconfig", true);

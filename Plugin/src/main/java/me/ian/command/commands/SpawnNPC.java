@@ -1,8 +1,7 @@
 package me.ian.command.commands;
 
 import me.ian.PVPHelper;
-import me.ian.command.CommandData;
-import me.ian.lobby.npc.NPCManager;
+import me.ian.command.PluginCommand;
 import me.ian.lobby.npc.custom.Cashier;
 import me.ian.utils.PlayerUtils;
 import org.bukkit.command.Command;
@@ -10,7 +9,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class SpawnNPC extends CommandData implements CommandExecutor {
+public class SpawnNPC extends PluginCommand implements CommandExecutor {
     public SpawnNPC() {
         super("spawnnpc", true);
     }
