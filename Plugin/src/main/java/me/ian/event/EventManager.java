@@ -2,6 +2,8 @@ package me.ian.event;
 
 import me.ian.PVPHelper;
 import me.ian.event.listeners.PlayerDeathListener;
+import me.ian.event.listeners.patches.*;
+import me.ian.event.listeners.ItemRevertListener;
 import org.bukkit.event.Listener;
 
 import java.util.ArrayList;
@@ -19,9 +21,15 @@ public class EventManager {
 
         // add listeners
         listeners.add(new PlayerDeathListener());
+        listeners.add(new Boatfly());
+        listeners.add(new EntityCollisions());
+        listeners.add(new ProjectileCrash());
+        listeners.add(new ProjectileVelocity());
+        listeners.add(new DispenserCrash());
+        listeners.add(new ItemRevertListener());
     }
 
     public void registerEvents() {
-        listeners.forEach(listener -> PVPHelper.INSTANCE.getServer().getPluginManager().registerEvents(listener, PVPHelper.INSTANCE));
+        listeners.forEach(listener -> PVPHelper.INSTANCE.registerListener(listener));
     }
 }

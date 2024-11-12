@@ -3,6 +3,7 @@ package me.ian.lobby.npc;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.server.v1_12_R1.*;
@@ -29,15 +30,13 @@ public class NPC {
     private String name;
     private GameProfile gameProfile;
     private EntityPlayer entityPlayer;
-    private String texture;
-    private String signature;
+    private SkinTexture texture;
     private boolean facePlayers;
 
-    public NPC(Location location, String name, String texture, String signature, boolean shouldFacePlayers) {
+    public NPC(Location location, String name, SkinTexture texture, boolean shouldFacePlayers) {
         this.location = location;
         this.name = name;
         this.texture = texture;
-        this.signature = signature;
         this.facePlayers = shouldFacePlayers;
     }
 
@@ -45,7 +44,7 @@ public class NPC {
         MinecraftServer server = MinecraftServer.getServer();
         WorldServer worldServer = ((CraftWorld) location.getWorld()).getHandle();
         gameProfile = new GameProfile(UUID.randomUUID(), ChatColor.translateAlternateColorCodes('&', name));
-        gameProfile.getProperties().put("textures", new Property("textures", texture, signature));
+        gameProfile.getProperties().put("textures", new Property("textures", texture.getTexture(), texture.getSignature()));
         entityPlayer = new EntityPlayer(server, worldServer, gameProfile, new PlayerInteractManager(worldServer));
         entityPlayer.setLocation(location.getX(), location.getY(), location.getZ(), 0.0f, 0.0f);
         entityPlayer.playerConnection = new PlayerConnection(server, new NetworkManager(EnumProtocolDirection.CLIENTBOUND), entityPlayer);
@@ -102,5 +101,12 @@ public class NPC {
 
     public void onInteract(Player player) {
 
+    }
+
+    @Data
+    @AllArgsConstructor
+    public static class SkinTexture {
+        private String texture;
+        private String signature;
     }
 }

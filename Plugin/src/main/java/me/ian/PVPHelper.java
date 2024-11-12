@@ -7,6 +7,11 @@ import me.ian.lobby.npc.NPCManager;
 import me.ian.lobby.world.VoidWorld;
 import me.ian.time.TaskManager;
 import me.ian.time.schedulers.TabListUpdater;
+import me.txmc.protocolapi.PacketEventDispatcher;
+import me.txmc.protocolapi.PacketListener;
+import me.txmc.protocolapi.reflection.ClassProcessor;
+import net.minecraft.server.v1_12_R1.Packet;
+import org.bukkit.event.Listener;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -16,8 +21,11 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author SevJ6
@@ -25,9 +33,12 @@ import java.util.concurrent.ScheduledExecutorService;
 public class PVPHelper extends JavaPlugin {
 
     public static final long START_TIME = System.currentTimeMillis();
-    public static final ScheduledExecutorService EXECUTOR_SERVICE = Executors.newScheduledThreadPool(3);
+    public static final ScheduledExecutorService EXECUTOR_SERVICE = Executors.newScheduledThreadPool(4);
     public static PVPHelper INSTANCE;
     private Config config;
+    private PacketEventDispatcher dispatcher;
+
+    private List<ViolationManager> violationManagers;
 
     @Getter
     private CommandManager commandRegister;
@@ -59,6 +70,9 @@ public class PVPHelper extends JavaPlugin {
             getLogger().warning("PlaceholderAPI is not installed!");
         }
 
+        dispatcher = new PacketEventDispatcher(this);
+        violationManagers = new ArrayList<>();
+        EXECUTOR_SERVICE.scheduleAtFixedRate(() -> violationManagers.forEach(ViolationManager::decrementAll), 0, 1, TimeUnit.SECONDS);
         commandRegister = new CommandManager();
         commandRegister.registerCommands();
         eventRegister = new EventManager();
@@ -90,5 +104,21 @@ public class PVPHelper extends JavaPlugin {
         } finally {
             if (mixinJar.exists()) mixinJar.delete();
         }
+    }
+
+    public void registerListener(Listener listener) {
+        if (ClassProcessor.hasAnnotation(listener)) ClassProcessor.process(listener);
+        getServer().getPluginManager().registerEvents(listener, this);
+    }
+
+    @SafeVarargs
+    public final void registerPacketListener(PacketListener listener, Class<? extends Packet<?>>... packets) {
+        if (ClassProcessor.hasAnnotation(listener)) ClassProcessor.process(listener);
+        dispatcher.register(listener, packets);
+    }
+
+    public void registerViolationManager(ViolationManager violationManager) {
+        if (violationManagers.contains(violationManager)) return;
+        violationManagers.add(violationManager);
     }
 }

@@ -1,5 +1,8 @@
 package me.ian.utils;
 
+import me.ian.PVPHelper;
+import me.ian.lobby.npc.NPC;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import org.json.simple.JSONArray;
@@ -10,6 +13,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.logging.Level;
 
 /**
  * @author SevJ6
@@ -41,7 +45,7 @@ public class PlayerUtils {
     }
 
     // Method to fetch skin properties (textures and signature) by UUID
-    public static String[] getSkinProperties(String uuid) {
+    public static NPC.SkinTexture getSkinProperties(String uuid) {
         String apiUrl = "https://sessionserver.mojang.com/session/minecraft/profile/" + uuid + "?unsigned=false";
         String[] skinProperties = new String[2]; // 0: textures, 1: signature
 
@@ -75,6 +79,17 @@ public class PlayerUtils {
             e.printStackTrace();
         }
 
-        return skinProperties; // returns [textures, signature] or [null, null] if not found
+        return new NPC.SkinTexture(skinProperties[0], skinProperties[1]);
+    }
+
+    public static void kick(Player player, String reason) {
+        run(() -> {
+            player.kickPlayer(reason);
+            PVPHelper.INSTANCE.getLogger().log(Level.INFO, String.format("%s has been kicked for: %s", player.getName(), reason));
+        });
+    }
+
+    public static void run(Runnable runnable) {
+        Bukkit.getScheduler().runTask(PVPHelper.INSTANCE, runnable);
     }
 }

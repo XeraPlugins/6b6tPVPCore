@@ -5,6 +5,9 @@ msg_prefix = "&6[&b6b6tPVP&r&6]&r "
 crystal_player_kill = "&3%killer% &4killed &3%victim% &4using an &6End Crystal"
 crystal_player_suicide = "&3%victim% &4committed suicide using an &6End Crystal"
 
+# Packet-per-second rate limiting. Prevent client related packet exploits.
+packet_limit = 400
+
 # TabList
 # Uses PlaceholderAPI.
 # Please see - https://wiki.placeholderapi.com/users/placeholder-list/#player
