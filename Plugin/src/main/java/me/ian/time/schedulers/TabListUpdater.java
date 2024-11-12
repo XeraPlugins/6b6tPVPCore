@@ -1,6 +1,7 @@
 package me.ian.time.schedulers;
 
 import com.moandjiezana.toml.Toml;
+import me.clip.placeholderapi.PlaceholderAPI;
 import me.ian.PVPHelper;
 import me.ian.time.ScheduledTask;
 import me.ian.utils.Utils;
@@ -20,8 +21,10 @@ public class TabListUpdater {
     public static void updateTablist() {
         Toml toml = PVPHelper.INSTANCE.getRunningConfig().getToml().getTable("tablist");
         Bukkit.getOnlinePlayers().forEach(player -> {
-            TextComponent componentHeader = new TextComponent(parsePlaceHolders(toml.getString("header"), player));
-            TextComponent componentFooter = new TextComponent(parsePlaceHolders(toml.getString("footer"), player));
+//            TextComponent componentHeader = new TextComponent(parsePlaceHolders(toml.getString("header"), player));
+//            TextComponent componentFooter = new TextComponent(parsePlaceHolders(toml.getString("footer"), player));
+            TextComponent componentHeader = new TextComponent(Utils.translateChars(PlaceholderAPI.setPlaceholders(player, toml.getString("header"))));
+            TextComponent componentFooter = new TextComponent(Utils.translateChars(PlaceholderAPI.setPlaceholders(player, toml.getString("footer"))));
             player.setPlayerListHeaderFooter(componentHeader, componentFooter);
         });
     }
@@ -33,7 +36,7 @@ public class TabListUpdater {
         String online = String.valueOf(Bukkit.getOnlinePlayers().size());
         int rawPing = getPing(player);
         String ping = rawPing >= 250 ? ChatColor.RED + String.valueOf(rawPing) : rawPing >= 150 ? ChatColor.YELLOW + String.valueOf(rawPing) : ChatColor.GREEN + String.valueOf(rawPing);
-        return Utils.translateChars(input.replace("%tps%", strTps).replace("%players%", online)).replace("%ping%", ping).replace("%uptime%", uptime);
+        return PlaceholderAPI.setPlaceholders(player, Utils.translateChars(input.replace("%tps%", strTps).replace("%players%", online)).replace("%ping%", ping).replace("%uptime%", uptime));
     }
 
     private static int getPing(Player player) {

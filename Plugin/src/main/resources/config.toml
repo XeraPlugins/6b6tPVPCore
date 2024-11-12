@@ -1,5 +1,11 @@
 msg_prefix = "&6[&b6b6tPVP&r&6]&r "
 
+# Uses Placeholder API.
+# Please see - https://wiki.placeholderapi.com/users/placeholder-list/#player
+# Ensure to run /papi ecloud download Player and /papi ecloud download Server
 [tablist]
 header = "\n&b6b6tPVP\n"
-footer = "\n  %tps% &btps - %players% players - %ping% ping - %uptime% uptime  \n"
+footer = "\n  %server_tps_1_colored%&r &7tps - %server_online% players - %player_ping%&r &7ping - %server_uptime% uptime  \n"
+
+# Death Messages
+crystal_player_kill = ""

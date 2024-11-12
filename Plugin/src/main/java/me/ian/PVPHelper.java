@@ -1,6 +1,8 @@
 package me.ian;
 
 import lombok.Getter;
+import me.clip.placeholderapi.PlaceholderAPI;
+import me.clip.placeholderapi.PlaceholderAPIPlugin;
 import me.ian.command.CommandRegister;
 import me.ian.event.EventRegister;
 import me.ian.lobby.npc.NPCManager;
