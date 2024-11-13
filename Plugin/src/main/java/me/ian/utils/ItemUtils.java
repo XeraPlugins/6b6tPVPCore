@@ -7,20 +7,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class ItemUtils {
 
     public static boolean isIllegal(ItemStack itemStack) {
-        if (isOverStacked(itemStack)) return true;
-        else return isOverEnchanted(itemStack);
-    }
-
-    public static boolean isOverEnchanted(ItemStack itemStack) {
         if (itemStack == null) return false;
         if (!itemStack.hasItemMeta()) return false;
         if (!itemStack.getItemMeta().hasEnchants()) return false;
         return itemStack.getItemMeta().getEnchants().entrySet().stream().anyMatch(entry -> entry.getValue() > entry.getKey().getMaxLevel());
-    }
-
-    public static boolean isOverStacked(ItemStack itemStack) {
-        if (itemStack == null) return false;
-        return itemStack.getAmount() > itemStack.getMaxStackSize();
     }
 
     public static void revertItemStack(ItemStack itemStack) {
@@ -35,7 +25,6 @@ public class ItemUtils {
             }
         });
         itemStack.setItemMeta(meta);
-        if (isOverStacked(itemStack)) itemStack.setAmount(itemStack.getMaxStackSize());
     }
 
     public static void revertInventory(Inventory inventory) {

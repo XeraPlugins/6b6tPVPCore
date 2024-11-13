@@ -1,5 +1,6 @@
 package me.ian.utils;
 
+import me.ian.PVPHelper;
 import net.minecraft.server.v1_12_R1.ChunkProviderGenerate;
 import net.minecraft.server.v1_12_R1.EntityPlayer;
 import net.minecraft.server.v1_12_R1.StructureBoundingBox;
@@ -86,5 +87,9 @@ public class Utils {
         } catch (Throwable t) {
             t.printStackTrace();
         }
+    }
+
+    public static void run(Runnable runnable) {
+        Bukkit.getScheduler().runTask(PVPHelper.INSTANCE, runnable);
     }
 }

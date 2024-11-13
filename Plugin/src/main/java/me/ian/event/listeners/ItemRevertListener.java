@@ -58,7 +58,7 @@ public class ItemRevertListener extends ItemUtils implements Listener {
     public void onPortal(EntityPortalEvent event) {
         if (event.getEntity() instanceof Item) {
             ItemStack item = ((Item) event.getEntity()).getItemStack();
-            if (item != null && isIllegal(item)) {
+            if (isIllegal(item)) {
                 event.setCancelled(true);
                 event.getEntity().remove();
             }

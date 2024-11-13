@@ -2,7 +2,6 @@ package me.ian.command.commands;
 
 import me.ian.PVPHelper;
 import me.ian.command.PluginCommand;
-import me.ian.lobby.npc.NPC;
 import me.ian.lobby.npc.custom.Cashier;
 import me.ian.utils.PlayerUtils;
 import org.bukkit.command.Command;
@@ -13,8 +12,8 @@ import org.bukkit.entity.Player;
 /**
  * @author SevJ6
  */
-public class SpawnNPC extends PluginCommand implements CommandExecutor {
-    public SpawnNPC() {
+public class SpawnNPCCommand extends PluginCommand implements CommandExecutor {
+    public SpawnNPCCommand() {
         super("spawnnpc", true);
     }
 

@@ -18,17 +18,21 @@ java {
 repositories {
     mavenCentral()
     maven { url "https://repo.txmc.me/releases" }
+    maven { url = uri("https://repo.papermc.io/repository/maven-public/") }
     maven { url "https://repo.extendedclip.com/content/repositories/placeholderapi/" }
+    maven { url "https://maven.enginehub.org/repo/" }
 }
 
 dependencies {
     compileOnly "com.destroystokyo.paper:paper-jar:1.12.2-R0.1-SNAPSHOT"
     compileOnly "me.clip:placeholderapi:2.11.6"
+    compileOnly "com.sk89q.worldedit:worldedit-bukkit:6.1.4-SNAPSHOT"
     implementation project(':Mixins')
     implementation "me.txmc:protocolapi:1.2-SNAPSHOT"
+    implementation "com.moandjiezana.toml:toml4j:0.7.2"
     implementation "org.projectlombok:lombok:1.18.28"
     annotationProcessor "org.projectlombok:lombok:1.18.28"
-    implementation "com.moandjiezana.toml:toml4j:0.7.2"
+
 }
 
 processResources {

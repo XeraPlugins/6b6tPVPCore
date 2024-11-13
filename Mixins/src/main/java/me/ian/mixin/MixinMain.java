@@ -21,9 +21,9 @@ public class MixinMain {
         plugin.getLogger().info(translate("&3Successfully attached agent and got instrumentation instance&r&a %s&r", inst.getClass().getName()));
         long start = System.currentTimeMillis();
         // process mixins
-        RtMixin.processMixins(MixinCreeper.class);
         RtMixin.processMixins(MixinMinecraftServer.class);
         RtMixin.processMixins(MixinEntityPlayer.class);
+        RtMixin.processMixins(MixinCreeper.class);
         plugin.getLogger().info(translate("&3Preformed all mixins in&r&a %dms&r", (System.currentTimeMillis() - start)));
     }
 

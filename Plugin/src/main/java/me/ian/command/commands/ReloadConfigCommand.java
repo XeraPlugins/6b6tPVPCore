@@ -10,9 +10,9 @@ import org.bukkit.command.CommandSender;
 /**
  * @author SevJ6
  */
-public class ReloadConfig extends PluginCommand implements CommandExecutor {
+public class ReloadConfigCommand extends PluginCommand implements CommandExecutor {
 
-    public ReloadConfig() {
+    public ReloadConfigCommand() {
         super("reloadconfig", true);
     }
 

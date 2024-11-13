@@ -2,6 +2,7 @@ package me.ian.event;
 
 import me.ian.PVPHelper;
 import me.ian.arena.ArenaManager;
+import me.ian.event.listeners.BedPlacementListener;
 import me.ian.event.listeners.PlayerDeathListener;
 import me.ian.event.listeners.patches.*;
 import me.ian.event.listeners.ItemRevertListener;
@@ -30,6 +31,7 @@ public class EventManager {
         listeners.add(new DispenserCrash());
         listeners.add(new ItemRevertListener());
         listeners.add(new LobbyProtection());
+        listeners.add(new BedPlacementListener());
         listeners.add(PVPHelper.INSTANCE.getArenaManager());
     }
 

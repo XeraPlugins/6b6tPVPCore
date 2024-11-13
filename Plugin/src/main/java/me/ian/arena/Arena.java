@@ -1,8 +1,19 @@
 package me.ian.arena;
 
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.blocks.BaseBlock;
+import com.sk89q.worldedit.bukkit.BukkitUtil;
+import com.sk89q.worldedit.bukkit.BukkitWorld;
+import com.sk89q.worldedit.function.operation.Operations;
+import com.sk89q.worldedit.regions.CuboidRegion;
 import lombok.Getter;
+import lombok.SneakyThrows;
+import me.ian.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
@@ -50,5 +61,22 @@ public class Arena {
                 .filter(player -> Objects.equals(world, player.getWorld()))
                 .filter(this::isPlayerWithinBounds)
                 .collect(Collectors.toList());
+    }
+
+    @SneakyThrows
+    public void clear() {
+        CuboidRegion region = new CuboidRegion(BukkitUtil.getLocalWorld(getWorld()), new Vector(pointA.getX(), pointA.getY(), pointA.getZ()), new Vector(pointB.getX(), pointB.getY(), pointB.getZ()));
+        EditSession session = WorldEdit.getInstance().getEditSessionFactory().getEditSession(new BukkitWorld(getWorld()), region.getArea());
+        for (int x = region.getMinimumPoint().getBlockX(); x <= region.getMaximumPoint().getBlockX(); x++) {
+            for (int y = region.getMinimumPoint().getBlockY(); y <= region.getMaximumPoint().getBlockY(); y++) {
+                for (int z = region.getMinimumPoint().getBlockZ(); z <= region.getMaximumPoint().getBlockZ(); z++) {
+                    if (getWorld().getBlockAt(x, y, z).getType() != Material.BEDROCK) {
+                        session.setBlock(new Vector(x, y, z), new BaseBlock(0));
+                    }
+                }
+            }
+        }
+        Operations.complete(session.commit());
+        session.flushQueue();
     }
 }

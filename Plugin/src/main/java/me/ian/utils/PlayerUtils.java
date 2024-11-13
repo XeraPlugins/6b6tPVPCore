@@ -1,8 +1,10 @@
 package me.ian.utils;
 
+import com.moandjiezana.toml.Toml;
 import me.ian.PVPHelper;
 import me.ian.lobby.npc.NPC;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import org.json.simple.JSONArray;
@@ -82,14 +84,15 @@ public class PlayerUtils {
         return new NPC.SkinTexture(skinProperties[0], skinProperties[1]);
     }
 
+    public static void teleportToSpawn(Player player) {
+        Toml config = PVPHelper.INSTANCE.getRunningConfig().getToml().getTable("lobby_spawn");
+        player.teleport(new Location(Bukkit.getWorld(config.getString("world")), config.getDouble("x"), config.getDouble("y"), config.getDouble("z"), config.getDouble("yaw").floatValue(), config.getDouble("pitch").floatValue()));
+    }
+
     public static void kick(Player player, String reason) {
-        run(() -> {
+        Utils.run(() -> {
             player.kickPlayer(reason);
             PVPHelper.INSTANCE.getLogger().log(Level.INFO, String.format("%s has been kicked for: %s", player.getName(), reason));
         });
-    }
-
-    public static void run(Runnable runnable) {
-        Bukkit.getScheduler().runTask(PVPHelper.INSTANCE, runnable);
     }
 }

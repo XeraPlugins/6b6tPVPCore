@@ -12,9 +12,9 @@ import org.bukkit.entity.Player;
 /**
  * @author SevJ6
  */
-public class FacePlayer extends PluginCommand implements CommandExecutor {
+public class FacePlayerCommand extends PluginCommand implements CommandExecutor {
 
-    public FacePlayer() {
+    public FacePlayerCommand() {
         super("faceplayer", true);
     }
 
@@ -23,7 +23,7 @@ public class FacePlayer extends PluginCommand implements CommandExecutor {
         Player player = (Player) sender;
 
         if (!(args.length > 0)) {
-            Utils.sendMessage(sender, "Must enter a player name");
+            Utils.sendMessage(sender, command.getUsage());
             return true;
         }
 
