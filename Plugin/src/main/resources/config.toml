@@ -12,6 +12,8 @@ pitch = 0.0
 # NOTE: Does not parse PlaceholderAPI
 crystal_player_kill = "&3%killer% &4killed &3%victim% &4using an &6End Crystal"
 crystal_player_suicide = "&3%victim% &4committed suicide using an &6End Crystal"
+creeper_player_kill = "&3%killer% &4killed &3%victim% &4by spawning a &6Creeper"
+creeper_player_suicide = "&3%victim% &4committed suicide spawning a &6Creeper"
 
 # Packet-per-second rate limiting. Prevent client related packet exploits.
 packet_limit = 400

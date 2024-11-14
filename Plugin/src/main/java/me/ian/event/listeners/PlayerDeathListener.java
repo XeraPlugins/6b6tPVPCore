@@ -38,6 +38,7 @@ public class PlayerDeathListener implements Listener {
     public void onPreDeath(PlayerPreDeathEvent event) {
         Player player = event.getPlayer().getBukkitEntity();
         if (player.getLastDamageCause() instanceof EntityDamageByEntityEvent) {
+            Toml config = PVPHelper.INSTANCE.getRunningConfig().getToml();
             EntityDamageByEntityEvent playerDamageEvent = (EntityDamageByEntityEvent) player.getLastDamageCause();
             if (playerDamageEvent.getDamager() instanceof EnderCrystal) {
                 EnderCrystal crystal = (EnderCrystal) playerDamageEvent.getDamager();
@@ -45,7 +46,6 @@ public class PlayerDeathListener implements Listener {
                     EntityDamageByEntityEvent crystalDamageEvent = (EntityDamageByEntityEvent) crystal.getLastDamageCause();
                     if (crystalDamageEvent.getDamager() instanceof Player) {
                         Player crystalHitter = (Player) crystalDamageEvent.getDamager();
-                        Toml config = PVPHelper.INSTANCE.getRunningConfig().getToml();
                         if (Objects.equals(crystalHitter, player)) {
                             Utils.broadcastMessage(config.getString("crystal_player_suicide").replace("%victim%", player.getName()));
                         } else {
@@ -61,9 +61,9 @@ public class PlayerDeathListener implements Listener {
                 Player placer = Bukkit.getPlayer(creeper.getMetadata("placer").get(0).asString());
                 if (placer == null) return;
                 if (Objects.equals(placer, player)) {
-                    Utils.broadcastMessage(String.format("&3%s &4committed suicide by spawning a &6Creeper", player.getName()));
+                    Utils.broadcastMessage(config.getString("creeper_player_suicide").replace("%victim%", player.getName()));
                 } else {
-                    Utils.broadcastMessage(String.format("&3%s &4killed &3%s &4by spawning a &6Creeper", placer.getName(), player.getName()));
+                    Utils.broadcastMessage(config.getString("creeper_player_kill").replace("%killer%", placer.getName()).replace("%victim%", player.getName()));
                 }
                 return;
             }
@@ -80,7 +80,7 @@ public class PlayerDeathListener implements Listener {
                 if (nmsItem.getTag().getCompound("EntityTag").getString("id").equals("minecraft:creeper")) {
                     Utils.run(() -> {
                         event.getClickedBlock().getRelative(event.getBlockFace()).getLocation()
-                                .getNearbyEntities(2, 2, 2)
+                                .getNearbyEntities(1, 1, 1)
                                 .stream()
                                 .filter(entity -> entity.getType() == EntityType.CREEPER)
                                 .filter(entity -> entity.getTicksLived() < 3)

@@ -1,5 +1,6 @@
 package me.ian.utils;
 
+import me.ian.duels.Duel;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
