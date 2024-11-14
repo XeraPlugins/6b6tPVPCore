@@ -3,6 +3,7 @@ package me.ian;
 import lombok.Getter;
 import me.ian.arena.ArenaManager;
 import me.ian.command.CommandManager;
+import me.ian.duels.DuelManager;
 import me.ian.event.EventManager;
 import me.ian.lobby.npc.NPCManager;
 import me.ian.lobby.world.VoidWorld;
@@ -40,6 +41,9 @@ public class PVPHelper extends JavaPlugin {
     private PacketEventDispatcher dispatcher;
 
     private List<ViolationManager> violationManagers;
+
+    @Getter
+    private DuelManager duelManager;
 
     @Getter
     private ArenaManager arenaManager;
@@ -82,6 +86,7 @@ public class PVPHelper extends JavaPlugin {
         commandRegister.registerCommands();
         eventRegister = new EventManager();
         eventRegister.registerEvents();
+        duelManager = new DuelManager();
         npcManager = new NPCManager();
         TaskManager.register(TabListUpdater.class);
     }

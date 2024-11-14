@@ -13,6 +13,8 @@ import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 @Getter
 @Setter
@@ -24,6 +26,28 @@ public class Duel {
     private boolean active = false;
     private boolean winnerDeclared = false;
 
+    public void start() {
+        participants.get(0).teleport(arena.getWorld().getHighestBlockAt(arena.getPointA()).getLocation());
+        participants.get(1).teleport(arena.getWorld().getHighestBlockAt(arena.getPointB()).getLocation());
+        PlayerUtils.facePlayersTowardsEachOther(participants.get(0), participants.get(1));
+
+        new Timer().scheduleAtFixedRate(new TimerTask() {
+            int countdown = 5;
+
+            @Override
+            public void run() {
+                if (countdown == 0) {
+                    participants.forEach(player -> PlayerUtils.sendTitle(player, "&e&lGO!", ""));
+                    setActive(true);
+                    this.cancel();
+                } else {
+                    participants.forEach(player -> PlayerUtils.sendTitle(player, String.format("&e%s &7vs. &e%s", participants.get(0).getName(), participants.get(1).getName()), String.format("&bMatch starts in &a%s &bseconds...", countdown)));
+                    countdown--;
+                }
+            }
+        }, 1000L, 1000L);
+    }
+
     public void declareWinner(Player player) {
         if (!participants.contains(player)) return;
         setWinnerDeclared(true);
@@ -31,10 +55,12 @@ public class Duel {
         player.getWorld().spawn(player.getLocation(), Firework.class);
         Bukkit.getScheduler().runTaskLater(PVPHelper.INSTANCE, () -> {
             participants.forEach(participant -> {
-                participant.setGameMode(GameMode.SURVIVAL);
-                participant.setHealth(participant.getMaxHealth());
-                participant.getInventory().clear();
-                PlayerUtils.teleportToSpawn(participant);
+                if (participant.isOnline()) {
+                    participant.setGameMode(GameMode.SURVIVAL);
+                    participant.setHealth(participant.getMaxHealth());
+                    participant.getInventory().clear();
+                    PlayerUtils.teleportToSpawn(participant);
+                }
             });
             arena.clear();
         }, 20 * 5L);

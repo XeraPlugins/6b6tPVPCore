@@ -1,5 +1,6 @@
 package me.ian.utils;
 
+import com.destroystokyo.paper.Title;
 import com.moandjiezana.toml.Toml;
 import me.ian.PVPHelper;
 import me.ian.lobby.npc.NPC;
@@ -44,6 +45,12 @@ public class PlayerUtils {
         player2.teleport(player2.getLocation().setDirection(direction2To1));
         player2.getLocation().setYaw(yaw2);
         player2.getLocation().setPitch(pitch2);
+    }
+
+    public static void sendTitle(Player player, String title, String subTitle) {
+        int stay = 20;      // Duration in ticks for display time (1 second)
+        int fadeOut = 10;   // Duration in ticks for fade-out (0.5 seconds)
+        player.sendTitle(Utils.translateChars(title), Utils.translateChars(subTitle), 0, stay, fadeOut);
     }
 
     // Method to fetch skin properties (textures and signature) by UUID
