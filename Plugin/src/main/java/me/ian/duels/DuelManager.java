@@ -10,6 +10,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -45,6 +47,16 @@ public class DuelManager implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onDamage(EntityDamageEvent event) {
         event.setCancelled(event.getEntity() instanceof Player && duels.stream().anyMatch(duel -> duel.getParticipants().contains((Player) event.getEntity()) && !duel.isActive()));
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onBlockBreak(BlockBreakEvent event) {
+        event.setCancelled(duels.stream().anyMatch(duel -> duel.getParticipants().contains(event.getPlayer()) && !duel.isActive() && !duel.isWinnerDeclared()));
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onBlockPlace(BlockPlaceEvent event) {
+        event.setCancelled(duels.stream().anyMatch(duel -> duel.getParticipants().contains(event.getPlayer()) && !duel.isActive() && !duel.isWinnerDeclared()));
     }
 
     @EventHandler(priority = EventPriority.HIGH)

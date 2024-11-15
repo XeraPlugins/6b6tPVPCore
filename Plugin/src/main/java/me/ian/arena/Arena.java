@@ -16,6 +16,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -67,6 +68,13 @@ public class Arena {
                 .collect(Collectors.toList());
     }
 
+    public List<Entity> getEntities() {
+        return getWorld().getEntities().stream()
+                .filter(entity -> !(entity instanceof Player))
+                .filter(entity -> isLocationWithinBounds(entity.getLocation()))
+                .collect(Collectors.toList());
+    }
+
     @SneakyThrows
     public void clear() {
         CuboidRegion region = new CuboidRegion(BukkitUtil.getLocalWorld(getWorld()), new Vector(pointA.getX(), pointA.getY(), pointA.getZ()), new Vector(pointB.getX(), pointB.getY(), pointB.getZ()));
@@ -82,5 +90,6 @@ public class Arena {
         }
         Operations.complete(session.commit());
         session.flushQueue();
+        getEntities().forEach(Entity::remove); // remove all entities
     }
 }
