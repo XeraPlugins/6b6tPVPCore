@@ -76,6 +76,7 @@ public class ArenaManager implements Listener {
         compound.setDouble("x2", pointB.getX());
         compound.setDouble("y2", pointB.getY());
         compound.setDouble("z2", pointB.getZ());
+        compound.setBoolean("isDuelArena", arena.isDuelArena());
         return compound;
     }
 
@@ -85,7 +86,8 @@ public class ArenaManager implements Listener {
         String name = compound.getString("name");
         Location pointA = new Location(world, compound.getDouble("x1"), compound.getDouble("y1"), compound.getDouble("z1"));
         Location pointB = new Location(world, compound.getDouble("x2"), compound.getDouble("y2"), compound.getDouble("z2"));
-        return new Arena(name, world, pointA, pointB);
+        boolean isDuelArena = compound.getBoolean("isDuelArena");
+        return new Arena(name, world, pointA, pointB, isDuelArena);
     }
 
     public Arena getArena(String name) {

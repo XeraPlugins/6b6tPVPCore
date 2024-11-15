@@ -1,6 +1,7 @@
 package me.ian.command.commands;
 
 import me.ian.PVPHelper;
+import me.ian.arena.Arena;
 import me.ian.command.PluginCommand;
 import me.ian.duels.Duel;
 import me.ian.utils.Utils;
@@ -23,11 +24,14 @@ public class DuelCommand extends PluginCommand implements CommandExecutor {
             Player player = (Player) sender;
             if (args.length > 0) {
                 Player opponent = Bukkit.getPlayer(args[0]);
-                if (opponent != null && opponent.isOnline()) {
-                    Duel duel = new Duel(PVPHelper.INSTANCE.getArenaManager().getArenas().get(0), Arrays.asList(player, opponent));
-                    PVPHelper.INSTANCE.getDuelManager().getDuels().add(duel);
-                    duel.start();
-                } Utils.sendMessage(player, String.format("&c%s is not online", args[0]));
+                if (opponent != null && Bukkit.getOnlinePlayers().contains(opponent)) {
+                    Arena arena = PVPHelper.INSTANCE.getDuelManager().findEmptyArena();
+                    if (arena != null) {
+                        Duel duel = new Duel(arena, Arrays.asList(player, opponent));
+                        PVPHelper.INSTANCE.getDuelManager().getDuels().add(duel);
+                        duel.start();
+                    } else Utils.sendMessage(player, "&cAll duel arenas are currently occupied. Please try again later.");
+                } else Utils.sendMessage(player, String.format("&c%s is not online", args[0]));
             } else Utils.sendMessage(player, command.getUsage());
         }
         return true;

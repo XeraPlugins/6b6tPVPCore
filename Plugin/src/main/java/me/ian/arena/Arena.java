@@ -10,6 +10,7 @@ import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import me.ian.PVPHelper;
 import me.ian.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -28,12 +29,15 @@ public class Arena {
     private final World world;
     private final Location pointA;
     private final Location pointB;
+    private final boolean isDuelArena;
 
-    public Arena(String name, World world, Location pointA, Location pointB) {
+    public Arena(String name, World world, Location pointA, Location pointB, boolean isDuelArena) {
         this.name = name;
         this.world = world;
         this.pointA = pointA;
         this.pointB = pointB;
+        this.isDuelArena = isDuelArena;
+        if (isDuelArena) PVPHelper.INSTANCE.getDuelManager().getDuelArenas().add(this);
     }
 
 

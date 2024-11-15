@@ -23,7 +23,7 @@ commands:
     usage: "/duel [player]"
   arena:
     description: "create a new arena within two points"
-    usage: "/createarena [name] OR /cleararenas OR /removearena [name] OR /listarenas"
+    usage: "/createarena [name] [duel] OR /cleararenas OR /removearena [name] OR /listarenas"
     aliases:
       - createarena
       - cleararenas

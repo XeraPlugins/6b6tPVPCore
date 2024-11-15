@@ -46,7 +46,7 @@ public class ArenaCommand extends PluginCommand implements CommandExecutor {
                     }
 
                     if (args.length > 0) {
-                        Arena arena = new Arena(args[0], player.getWorld(), pos1, pos2);
+                        Arena arena = new Arena(args[0], player.getWorld(), pos1, pos2, args.length > 1 && args[1].equals("duel"));
                         PVPHelper.INSTANCE.getArenaManager().createArena(arena);
                         Utils.sendMessage(player, String.format("&bCreated arena &a%s", arena.getName()));
                     } else Utils.sendMessage(player, "&cEnter a name please.");

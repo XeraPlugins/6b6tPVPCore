@@ -81,12 +81,12 @@ public class PVPHelper extends JavaPlugin {
         dispatcher = new PacketEventDispatcher(this);
         violationManagers = new ArrayList<>();
         EXECUTOR_SERVICE.scheduleAtFixedRate(() -> violationManagers.forEach(ViolationManager::decrementAll), 0, 1, TimeUnit.SECONDS);
-        arenaManager = new ArenaManager();
         commandRegister = new CommandManager();
         commandRegister.registerCommands();
         eventRegister = new EventManager();
         eventRegister.registerEvents();
         duelManager = new DuelManager();
+        arenaManager = new ArenaManager();
         npcManager = new NPCManager();
         TaskManager.register(TabListUpdater.class);
     }

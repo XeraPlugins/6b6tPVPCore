@@ -27,8 +27,8 @@ public class Duel {
     private boolean winnerDeclared = false;
 
     public void start() {
-        participants.get(0).teleport(arena.getWorld().getHighestBlockAt(arena.getPointA()).getLocation());
-        participants.get(1).teleport(arena.getWorld().getHighestBlockAt(arena.getPointB()).getLocation());
+        participants.get(0).teleport(arena.getWorld().getHighestBlockAt(arena.getPointA()).getLocation().add(0.5, 0.0, 0.5));
+        participants.get(1).teleport(arena.getWorld().getHighestBlockAt(arena.getPointB()).getLocation().add(0.5, 0.0, 0.5));
         PlayerUtils.facePlayersTowardsEachOther(participants.get(0), participants.get(1));
 
         new Timer().scheduleAtFixedRate(new TimerTask() {

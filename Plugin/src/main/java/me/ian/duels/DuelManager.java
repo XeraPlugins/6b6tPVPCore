@@ -21,9 +21,20 @@ import java.util.List;
 public class DuelManager implements Listener {
 
     private final List<Duel> duels = new ArrayList<>();
+    private final List<Arena> duelArenas = new ArrayList<>();
 
     public DuelManager() {
         PVPHelper.INSTANCE.registerListener(this);
+    }
+
+    public Arena findEmptyArena() {
+        for (Arena arena : duelArenas) {
+            for (Duel duel : duels) {
+                if (duel.getArena() == arena) continue;
+                return arena;
+            }
+        }
+        return null;
     }
 
     @EventHandler(priority = EventPriority.HIGH)
