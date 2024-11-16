@@ -31,6 +31,7 @@ public class Config {
                 loadConfig();  // Load the existing TOML config
             } else {
                 // Load and save the default config
+                configFile.createNewFile();
                 this.toml = new Toml().read(PVPHelper.class.getResourceAsStream("/config.toml"));
                 saveConfig();
             }

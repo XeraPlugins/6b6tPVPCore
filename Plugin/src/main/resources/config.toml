@@ -1,5 +1,11 @@
 msg_prefix = "&6[&b6b6tPVP&r&6]&r "
 
+crystal_player_kill = "&3%killer% &4killed &3%victim% &4using an &6End Crystal"
+crystal_player_suicide = "&3%victim% &4committed suicide using an &6End Crystal"
+creeper_player_kill = "&3%killer% &4killed &3%victim% &4by spawning a &6Creeper"
+creeper_player_suicide = "&3%victim% &4committed suicide spawning a &6Creeper"
+packet_limit = 400
+
 [lobby_spawn]
 world = "world"
 x = 0.5
@@ -7,16 +13,6 @@ y = 100.0
 z = 0.5
 yaw = 0.0
 pitch = 0.0
-
-# Death Messages
-# NOTE: Does not parse PlaceholderAPI
-crystal_player_kill = "&3%killer% &4killed &3%victim% &4using an &6End Crystal"
-crystal_player_suicide = "&3%victim% &4committed suicide using an &6End Crystal"
-creeper_player_kill = "&3%killer% &4killed &3%victim% &4by spawning a &6Creeper"
-creeper_player_suicide = "&3%victim% &4committed suicide spawning a &6Creeper"
-
-# Packet-per-second rate limiting. Prevent client related packet exploits.
-packet_limit = 400
 
 # TabList
 # Uses PlaceholderAPI.

@@ -73,6 +73,7 @@ public class PVPHelper extends JavaPlugin {
         INSTANCE = this;
         loadMixins();
         config = new Config("config.toml");
+        System.out.println(config);
 
         if (getServer().getPluginManager().getPlugin("PlaceholderAPI") == null) {
             getLogger().warning("PlaceholderAPI is not installed!");
@@ -83,10 +84,10 @@ public class PVPHelper extends JavaPlugin {
         EXECUTOR_SERVICE.scheduleAtFixedRate(() -> violationManagers.forEach(ViolationManager::decrementAll), 0, 1, TimeUnit.SECONDS);
         commandRegister = new CommandManager();
         commandRegister.registerCommands();
-        eventRegister = new EventManager();
-        eventRegister.registerEvents();
         duelManager = new DuelManager();
         arenaManager = new ArenaManager();
+        eventRegister = new EventManager();
+        eventRegister.registerEvents();
         npcManager = new NPCManager();
         TaskManager.register(TabListUpdater.class);
     }

@@ -3,10 +3,7 @@ package me.ian.command;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import me.ian.PVPHelper;
-import me.ian.command.commands.ArenaCommand;
-import me.ian.command.commands.FacePlayerCommand;
-import me.ian.command.commands.ReloadConfigCommand;
-import me.ian.command.commands.SpawnNPCCommand;
+import me.ian.command.commands.*;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.TabCompleter;
@@ -31,6 +28,7 @@ public class CommandManager {
         commands.add(new FacePlayerCommand());
         commands.add(new SpawnNPCCommand());
         commands.add(new ArenaCommand());
+        commands.add(new DuelCommand());
     }
 
     public void registerCommands() {

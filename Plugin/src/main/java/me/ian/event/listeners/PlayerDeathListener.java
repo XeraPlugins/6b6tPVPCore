@@ -1,6 +1,7 @@
 package me.ian.event.listeners;
 
 import com.moandjiezana.toml.Toml;
+import me.ian.Config;
 import me.ian.PVPHelper;
 import me.ian.mixin.event.PlayerPreDeathEvent;
 import me.ian.utils.Utils;
@@ -17,6 +18,7 @@ import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -34,7 +36,7 @@ import java.util.Objects;
  */
 public class PlayerDeathListener implements Listener {
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPreDeath(PlayerPreDeathEvent event) {
         Player player = event.getPlayer().getBukkitEntity();
         if (player.getLastDamageCause() instanceof EntityDamageByEntityEvent) {

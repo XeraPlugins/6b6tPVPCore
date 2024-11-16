@@ -1,5 +1,6 @@
 package me.ian.event;
 
+import me.ian.Config;
 import me.ian.PVPHelper;
 import me.ian.arena.ArenaManager;
 import me.ian.event.listeners.BedPlacementListener;
@@ -32,7 +33,6 @@ public class EventManager {
         listeners.add(new ItemRevertListener());
         listeners.add(new LobbyProtection());
         listeners.add(new BedPlacementListener());
-        listeners.add(PVPHelper.INSTANCE.getArenaManager());
     }
 
     public void registerEvents() {

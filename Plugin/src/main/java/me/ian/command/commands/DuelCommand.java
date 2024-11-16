@@ -6,6 +6,7 @@ import me.ian.command.PluginCommand;
 import me.ian.duels.Duel;
 import me.ian.utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -24,7 +25,7 @@ public class DuelCommand extends PluginCommand implements CommandExecutor {
             Player player = (Player) sender;
             if (args.length > 0) {
                 Player opponent = Bukkit.getPlayer(args[0]);
-                if (opponent != null && Bukkit.getOnlinePlayers().contains(opponent)) {
+                if (opponent != null && opponent.isOnline()) {
                     Arena arena = PVPHelper.INSTANCE.getDuelManager().findEmptyArena();
                     if (arena != null) {
                         Duel duel = new Duel(arena, Arrays.asList(player, opponent));
@@ -32,7 +33,7 @@ public class DuelCommand extends PluginCommand implements CommandExecutor {
                         duel.start();
                     } else Utils.sendMessage(player, "&cAll duel arenas are currently occupied. Please try again later.");
                 } else Utils.sendMessage(player, String.format("&c%s is not online", args[0]));
-            } else Utils.sendMessage(player, command.getUsage());
+            } else Utils.sendMessage(player, String.format("&d%s", command.getUsage()));
         }
         return true;
     }

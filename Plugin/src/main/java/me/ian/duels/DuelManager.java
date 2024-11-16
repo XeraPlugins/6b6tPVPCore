@@ -30,36 +30,33 @@ public class DuelManager implements Listener {
     }
 
     public Arena findEmptyArena() {
-        for (Arena arena : duelArenas) {
-            for (Duel duel : duels) {
-                if (duel.getArena() == arena) continue;
-                return arena;
-            }
-        }
-        return null;
+        return duelArenas.stream()
+                .filter(arena -> duels.stream().noneMatch(duel -> duel.getArena() == arena))
+                .findFirst()
+                .orElse(null);
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler
     public void onMove(PlayerMoveEvent event) {
         event.setCancelled(duels.stream().anyMatch(duel -> duel.getParticipants().contains(event.getPlayer()) && !duel.isActive() && !duel.isWinnerDeclared()));
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler
     public void onDamage(EntityDamageEvent event) {
         event.setCancelled(event.getEntity() instanceof Player && duels.stream().anyMatch(duel -> duel.getParticipants().contains((Player) event.getEntity()) && !duel.isActive()));
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         event.setCancelled(duels.stream().anyMatch(duel -> duel.getParticipants().contains(event.getPlayer()) && !duel.isActive() && !duel.isWinnerDeclared()));
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
         event.setCancelled(duels.stream().anyMatch(duel -> duel.getParticipants().contains(event.getPlayer()) && !duel.isActive() && !duel.isWinnerDeclared()));
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPreDeath(PlayerPreDeathEvent event) {
         Player player = event.getPlayer().getBukkitEntity();
         duels.stream().filter(duel -> duel.getParticipants().contains(player)).findFirst().ifPresent(duel -> {
