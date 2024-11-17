@@ -27,7 +27,7 @@ public class Kit {
         PlayerEquipKitEvent event = new PlayerEquipKitEvent(player, this);
         PVPHelper.INSTANCE.getServer().getPluginManager().callEvent(event);
         if (!event.isCancelled()) {
-            NBTUtils.setInventoryFromTag(player, compound);
+            NBTUtils.setPlayerInventoryFromTag(player, compound);
             Utils.sendMessage(player, String.format("&bEquipped kit &a%s", name));
         }
     }

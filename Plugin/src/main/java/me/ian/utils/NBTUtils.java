@@ -5,6 +5,8 @@ import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftInventoryPlayer;
 import org.bukkit.entity.Player;
 
 import java.io.*;
@@ -104,9 +106,27 @@ public class NBTUtils {
         return new Location(world, compound.getDouble("x"), compound.getDouble("y"), compound.getDouble("z"), compound.getFloat("yaw"), compound.getFloat("pitch"));
     }
 
-    public static void setInventoryFromTag(Player player, NBTTagCompound compound) {
-        if (player == null || !player.isOnline()) return;
-        EntityPlayer nmsPlayer = Utils.getHandle(player);
-        nmsPlayer.inventory.b(compound.getList("InvContents", 10));
+    /**
+     * Retrieves the player's inventory as an NBTTagCompound.
+     *
+     * @param player the Player whose inventory is to be retrieved
+     * @return the NBTTagCompound representing the player's inventory
+     */
+    public static NBTTagCompound getPlayerInventoryAsTag(Player player) {
+        NBTTagList items = new NBTTagList();
+        ((CraftInventoryPlayer) player.getInventory()).getInventory().a(items);
+        NBTTagCompound inventoryTag = new NBTTagCompound();
+        inventoryTag.set("InvContents", items);
+        return inventoryTag;
+    }
+
+    /**
+     * Sets the inventory of a player from an NBTTagCompound.
+     *
+     * @param player the Player whose inventory is to be set
+     * @param compound the NBTTagCompound containing the inventory contents
+     */
+    public static void setPlayerInventoryFromTag(Player player, NBTTagCompound compound) {
+        Utils.getHandle(player).inventory.b(compound.getList("InvContents", 10));
     }
 }

@@ -3,12 +3,16 @@ package me.ian.kits;
 import lombok.Getter;
 import me.ian.PVPHelper;
 import me.ian.utils.NBTUtils;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.io.File;
 import java.util.*;
 
 @Getter
-public class KitManager {
+public class KitManager implements Listener {
 
     private final List<Kit> globalKits;
     private final Map<UUID, List<Kit>> userKits;
@@ -32,12 +36,40 @@ public class KitManager {
 
         // Load Global Kits
         int count = (int) Arrays.stream(Objects.requireNonNull(globalKitDataFolder.listFiles()))
-                .filter(file -> !file.isDirectory())
+                .filter(file -> !file.isDirectory() && file.getName().endsWith(".nbt"))
                 .map(file -> loadKit(null, file.getName().replace(".nbt", "")))
                 .peek(globalKits::add)
                 .count();
 
         PVPHelper.INSTANCE.getLogger().info(String.format("Loaded %s global kits", count));
+        PVPHelper.INSTANCE.registerListener(this);
+    }
+
+    // Load User kits
+    @EventHandler
+    public void onJoin(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+        UUID playerUUID = player.getUniqueId();
+        File kitOwnerDataFolder = new File(userKitDataFolder, playerUUID.toString());
+
+        // Ensure the directory exists
+        if (!kitOwnerDataFolder.exists() || !kitOwnerDataFolder.isDirectory()) {
+            kitOwnerDataFolder.mkdirs(); // Create the directory if it doesn't exist
+            return; // No kits to load if the folder didn't exist
+        }
+
+        List<Kit> kits = userKits.computeIfAbsent(playerUUID, k -> new ArrayList<>());
+        for (File file : Objects.requireNonNull(kitOwnerDataFolder.listFiles())) {
+            if (!file.isDirectory() && file.getName().endsWith(".nbt")) {
+                String kitName = file.getName().replace(".nbt", "");
+                Kit kit = loadKit(playerUUID, kitName);
+                if (kit != null) {
+                    kits.add(kit); // Add to the user's kit list
+                }
+            }
+        }
+
+        PVPHelper.INSTANCE.getLogger().info(String.format("Loaded %d kits for player %s", kits.size(), player.getName()));
     }
 
     /**
@@ -117,5 +149,23 @@ public class KitManager {
 
         // Delete the kit file
         if (kitFile.exists()) kitFile.delete();
+    }
+
+    /**
+     * Retrieves a kit by name, either from the global kits or a specific user's kits.
+     *
+     * @param uuid The UUID of the kit owner. If null, the method searches the global kits.
+     * @param name The name of the kit to retrieve. Case-insensitive.
+     * @return The matching {@code Kit} object, or {@code null} if no matching kit is found.
+     */
+    public Kit getKit(UUID uuid, String name) {
+        // Determine the source of kits: global or user-specific
+        List<Kit> kits = (uuid == null) ? globalKits : userKits.getOrDefault(uuid, Collections.emptyList());
+
+        // Find and return the matching kit
+        return kits.stream()
+                .filter(kit -> kit.getName().equalsIgnoreCase(name))
+                .findAny()
+                .orElse(null);
     }
 }

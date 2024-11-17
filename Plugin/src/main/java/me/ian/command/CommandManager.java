@@ -29,6 +29,7 @@ public class CommandManager {
         commands.add(new SpawnNPCCommand());
         commands.add(new ArenaCommand());
         commands.add(new DuelCommand());
+        commands.add(new KitCommand());
     }
 
     public void registerCommands() {

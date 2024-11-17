@@ -5,6 +5,7 @@ import me.ian.arena.ArenaManager;
 import me.ian.command.CommandManager;
 import me.ian.duels.DuelManager;
 import me.ian.general.EventManager;
+import me.ian.kits.KitManager;
 import me.ian.lobby.npc.NPCManager;
 import me.ian.lobby.world.VoidWorld;
 import me.ian.time.TaskManager;
@@ -57,6 +58,9 @@ public class PVPHelper extends JavaPlugin {
     @Getter
     private NPCManager npcManager;
 
+    @Getter
+    private KitManager kitManager;
+
     // Return the custom Toml configuration
     public Config getRunningConfig() {
         return config;
@@ -86,6 +90,7 @@ public class PVPHelper extends JavaPlugin {
         commandRegister.registerCommands();
         duelManager = new DuelManager();
         arenaManager = new ArenaManager();
+        kitManager = new KitManager();
         eventRegister = new EventManager();
         eventRegister.registerEvents();
         npcManager = new NPCManager();
