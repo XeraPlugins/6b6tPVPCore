@@ -4,6 +4,8 @@ crystal_player_kill = "&3%killer% &4killed &3%victim% &4using an &6End Crystal"
 crystal_player_suicide = "&3%victim% &4committed suicide using an &6End Crystal"
 creeper_player_kill = "&3%killer% &4killed &3%victim% &4by spawning a &6Creeper"
 creeper_player_suicide = "&3%victim% &4committed suicide spawning a &6Creeper"
+duel_start = "&a%challenger% &bhas challenged &a%opponent% &bto a duel!"
+duel_win = "&a%winner% &bhas won the duel with &d%health%&r/&d%max_health%&r &bhealth left!"
 packet_limit = 400
 
 [lobby_spawn]

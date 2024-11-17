@@ -29,3 +29,4 @@ commands:
       - cleararenas
       - removearena
       - listarenas
+      - arenawand

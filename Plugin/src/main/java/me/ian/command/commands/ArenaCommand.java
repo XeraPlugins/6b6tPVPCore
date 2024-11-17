@@ -5,11 +5,15 @@ import me.ian.arena.Arena;
 import me.ian.arena.ArenaManager;
 import me.ian.command.PluginCommand;
 import me.ian.utils.Utils;
+import net.minecraft.server.v1_12_R1.ItemStack;
+import net.minecraft.server.v1_12_R1.Items;
+import net.minecraft.server.v1_12_R1.NBTTagCompound;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 
 import javax.rmi.CORBA.Util;
@@ -72,6 +76,16 @@ public class ArenaCommand extends PluginCommand implements CommandExecutor {
                     sb.append("Arenas (").append(arenaManager.getArenas().size()).append("): ");
                     arenaManager.getArenas().forEach(arena -> sb.append("&3").append(arena.getName()).append("&r, "));
                     Utils.sendMessage(player, sb.toString());
+                    break;
+                case "arenawand":
+                    ItemStack stick = new ItemStack(Items.STICK);
+                    NBTTagCompound compound = new NBTTagCompound();
+                    compound.setBoolean("arenaCreator", true);
+                    NBTTagCompound display = new NBTTagCompound();
+                    display.setString("Name", Utils.translateChars("&e&lArena Wand"));
+                    compound.set("display", display);
+                    stick.setTag(compound);
+                    player.getInventory().addItem(CraftItemStack.asBukkitCopy(stick));
                     break;
             }
         }

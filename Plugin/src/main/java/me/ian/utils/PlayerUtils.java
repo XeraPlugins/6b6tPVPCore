@@ -6,6 +6,7 @@ import me.ian.PVPHelper;
 import me.ian.lobby.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import org.json.simple.JSONArray;
@@ -48,9 +49,13 @@ public class PlayerUtils {
     }
 
     public static void sendTitle(Player player, String title, String subTitle) {
-        int stay = 20;      // Duration in ticks for display time (1 second)
+        int stay = 30;      // Duration in ticks for display time (1.5 seconds)
         int fadeOut = 10;   // Duration in ticks for fade-out (0.5 seconds)
         player.sendTitle(Utils.translateChars(title), Utils.translateChars(subTitle), 0, stay, fadeOut);
+    }
+
+    public static void sendPling(Player player, float pitch) {
+        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_PLING, 10f, pitch);
     }
 
     // Method to fetch skin properties (textures and signature) by UUID

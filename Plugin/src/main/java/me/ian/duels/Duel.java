@@ -27,9 +27,12 @@ public class Duel {
     private boolean winnerDeclared = false;
 
     public void start() {
-        participants.get(0).teleport(arena.getWorld().getHighestBlockAt(arena.getPointA()).getLocation().add(0.5, 0.0 ,0.5));
-        participants.get(1).teleport(arena.getWorld().getHighestBlockAt(arena.getPointB()).getLocation().add(0.5, 0.0, 0.5));
-        PlayerUtils.facePlayersTowardsEachOther(participants.get(0), participants.get(1));
+        Player challenger = participants.get(0);
+        Player opponent = participants.get(1);
+        Utils.broadcastMessage(PVPHelper.INSTANCE.getRunningConfig().getToml().getString("duel_start").replace("%challenger%", challenger.getName()).replace("%opponent%", opponent.getName()));
+        challenger.teleport(arena.getWorld().getHighestBlockAt(arena.getPointA()).getLocation().add(0.5, 0.0 ,0.5));
+        opponent.teleport(arena.getWorld().getHighestBlockAt(arena.getPointB()).getLocation().add(0.5, 0.0, 0.5));
+        PlayerUtils.facePlayersTowardsEachOther(challenger, opponent);
 
         new Timer().scheduleAtFixedRate(new TimerTask() {
             int countdown = 5;
@@ -37,11 +40,17 @@ public class Duel {
             @Override
             public void run() {
                 if (countdown == 0) {
-                    participants.forEach(player -> PlayerUtils.sendTitle(player, "&e&lGO!", ""));
+                    participants.forEach(player -> {
+                        PlayerUtils.sendTitle(player, "&e&lGO!", "");
+                        PlayerUtils.sendPling(player, 2f);
+                    });
                     setActive(true);
                     this.cancel();
                 } else {
-                    participants.forEach(player -> PlayerUtils.sendTitle(player, String.format("&e%s &7vs. &e%s", participants.get(0).getName(), participants.get(1).getName()), String.format("&bMatch starts in &a%s &bseconds...", countdown)));
+                    participants.forEach(player -> {
+                        PlayerUtils.sendTitle(player, String.format("&e%s &7vs. &e%s", challenger.getName(), opponent.getName()), String.format("&bMatch starts in &a%s &bseconds...", countdown));
+                        PlayerUtils.sendPling(player, 1f);
+                    });
                     countdown--;
                 }
             }
@@ -51,7 +60,7 @@ public class Duel {
     public void declareWinner(Player player) {
         if (!participants.contains(player)) return;
         setWinnerDeclared(true);
-        Utils.broadcastMessage(String.format("&a%s &bhas won the duel with &a%s &bhealth left", player.getName(), player.getHealth()));
+        Utils.broadcastMessage(PVPHelper.INSTANCE.getRunningConfig().getToml().getString("duel_win").replace("%winner%", player.getName()).replace("%health%", String.format("%.2f", player.getHealth())).replace("%max_health%", String.format("%.2f", player.getMaxHealth())));
         player.getWorld().spawn(player.getLocation(), Firework.class);
         Bukkit.getScheduler().runTaskLater(PVPHelper.INSTANCE, () -> {
             participants.forEach(participant -> {
