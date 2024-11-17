@@ -1,7 +1,6 @@
-package me.ian.event.listeners;
+package me.ian.general.listeners;
 
 import com.moandjiezana.toml.Toml;
-import me.ian.Config;
 import me.ian.PVPHelper;
 import me.ian.mixin.event.PlayerPreDeathEvent;
 import me.ian.utils.Utils;

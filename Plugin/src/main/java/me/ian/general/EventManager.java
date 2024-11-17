@@ -1,12 +1,10 @@
-package me.ian.event;
+package me.ian.general;
 
-import me.ian.Config;
 import me.ian.PVPHelper;
-import me.ian.arena.ArenaManager;
-import me.ian.event.listeners.BedPlacementListener;
-import me.ian.event.listeners.PlayerDeathListener;
-import me.ian.event.listeners.patches.*;
-import me.ian.event.listeners.ItemRevertListener;
+import me.ian.general.listeners.BedPlacementListener;
+import me.ian.general.listeners.PlayerDeathListener;
+import me.ian.general.listeners.patches.*;
+import me.ian.general.listeners.ItemRevertListener;
 import me.ian.lobby.LobbyProtection;
 import org.bukkit.event.Listener;
 

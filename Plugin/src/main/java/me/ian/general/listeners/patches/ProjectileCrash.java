@@ -1,4 +1,4 @@
-package me.ian.event.listeners.patches;
+package me.ian.general.listeners.patches;
 
 import me.ian.PVPHelper;
 import net.minecraft.server.v1_12_R1.*;

@@ -1,4 +1,4 @@
-package me.ian.event.listeners;
+package me.ian.general.listeners;
 
 import me.ian.PVPHelper;
 import me.ian.utils.Utils;

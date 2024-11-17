@@ -30,3 +30,11 @@ commands:
       - removearena
       - listarenas
       - arenawand
+  kit:
+    description: "give yourself items with pre-set inventory loadouts"
+    usage: "/kit [name] OR /createukit [name] OR /creategkit [name] OR /removeukit [name] OR /removegkit [name]"
+    aliases:
+      - createukit
+      - creategkit
+      - removeukit
+      - removegkit

@@ -1,4 +1,4 @@
-package me.ian.event.listeners.patches;
+package me.ian.general.listeners.patches;
 
 import me.ian.PVPHelper;
 import org.bukkit.entity.Player;

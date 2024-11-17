@@ -4,7 +4,7 @@ import lombok.Getter;
 import me.ian.arena.ArenaManager;
 import me.ian.command.CommandManager;
 import me.ian.duels.DuelManager;
-import me.ian.event.EventManager;
+import me.ian.general.EventManager;
 import me.ian.lobby.npc.NPCManager;
 import me.ian.lobby.world.VoidWorld;
 import me.ian.time.TaskManager;
