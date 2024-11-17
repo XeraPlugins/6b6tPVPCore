@@ -38,3 +38,5 @@ commands:
       - creategkit
       - removeukit
       - removegkit
+      - listukits
+      - listgkits

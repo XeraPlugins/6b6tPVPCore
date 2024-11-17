@@ -7,6 +7,7 @@ creeper_player_suicide = "&3%victim% &4committed suicide spawning a &6Creeper"
 duel_start = "&a%challenger% &bhas challenged &a%opponent% &bto a duel!"
 duel_win = "&a%winner% &bhas won the duel with &d%health%&r/&d%max_health%&r &bhealth left!"
 packet_limit = 400
+user_kit_limit = 9
 
 [lobby_spawn]
 world = "world"
