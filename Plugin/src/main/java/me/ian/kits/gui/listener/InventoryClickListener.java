@@ -17,7 +17,10 @@ public class InventoryClickListener implements Listener {
     public void onClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
         if (player.hasMetadata("kit_gui")) {
+            event.setCancelled(true);
             KitGui gui = (KitGui) player.getMetadata("kit_gui").get(0).value();
+            if (event.getClickedInventory() != event.getView().getTopInventory()) return;
+            if (event.getClickedInventory().getItem(event.getSlot()) == null) return;
             if (gui != null) gui.onSlotClick(event.getSlot());
         }
     }
