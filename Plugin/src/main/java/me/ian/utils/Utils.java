@@ -27,6 +27,10 @@ import java.util.Random;
  */
 public class Utils {
 
+    public static String getPrefix() {
+        return PVPHelper.INSTANCE.getRunningConfig().getToml().getString("msg_prefix");
+    }
+
     public static void sendMessage(Object recipient, String message) {
         message = translateChars(message);
         if (recipient instanceof Player) ((Player) recipient).sendMessage(message);

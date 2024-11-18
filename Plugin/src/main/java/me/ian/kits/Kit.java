@@ -28,6 +28,7 @@ public class Kit {
         PVPHelper.INSTANCE.getServer().getPluginManager().callEvent(event);
         if (!event.isCancelled()) {
             NBTUtils.setPlayerInventoryFromTag(player, compound);
+            if (player.hasMetadata("kit_gui")) player.removeMetadata("kit_gui", PVPHelper.INSTANCE);
             Utils.sendMessage(player, String.format("&bEquipped kit &a%s", name));
         }
     }

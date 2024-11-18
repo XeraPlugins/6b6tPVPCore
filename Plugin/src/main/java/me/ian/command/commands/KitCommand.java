@@ -4,12 +4,14 @@ import me.ian.PVPHelper;
 import me.ian.command.PluginCommand;
 import me.ian.kits.Kit;
 import me.ian.kits.KitManager;
+import me.ian.kits.gui.KitGuiTypeSelector;
 import me.ian.utils.NBTUtils;
 import me.ian.utils.Utils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,9 +31,9 @@ public class KitCommand extends PluginCommand implements CommandExecutor {
         // TODO: implement kit system
         switch (label) {
             case "kit":
-                // TODO: eventually implement a new GUI system if there are no command arguments (ignore for now)
                 if (args.length == 0) {
-                    Utils.sendMessage(player, "&cMust enter a name for the kit.");
+                    KitGuiTypeSelector guiTypeSelector = new KitGuiTypeSelector(player, kitManager);
+                    guiTypeSelector.open();
                     break;
                 }
 

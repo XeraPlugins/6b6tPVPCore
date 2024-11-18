@@ -2,6 +2,7 @@ package me.ian.kits;
 
 import lombok.Getter;
 import me.ian.PVPHelper;
+import me.ian.kits.gui.listener.InventoryClickListener;
 import me.ian.utils.NBTUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -43,6 +44,7 @@ public class KitManager implements Listener {
 
         PVPHelper.INSTANCE.getLogger().info(String.format("Loaded %s global kits", count));
         PVPHelper.INSTANCE.registerListener(this);
+        PVPHelper.INSTANCE.registerListener(new InventoryClickListener());
     }
 
     // Load User kits
