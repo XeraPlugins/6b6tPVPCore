@@ -61,7 +61,6 @@ public class NPC {
         PlayerConnection connection = ((CraftPlayer) player).getHandle().playerConnection;
         connection.sendPacket(headRotationPacket);
         connection.sendPacket(lookPacket);
-//        entityPlayer.setPositionRotation(location.getX(), location.getY(), location.getZ(), yawAngle, pitchAngle);
     }
 
     public void setNameInvisible() {
