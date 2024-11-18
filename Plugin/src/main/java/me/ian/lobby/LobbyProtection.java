@@ -48,8 +48,8 @@ public class LobbyProtection implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onRespawn(PlayerRespawnEvent event) {
-        Player player = event.getPlayer();
-        PlayerUtils.teleportToSpawn(player);
+        Toml config = PVPHelper.INSTANCE.getRunningConfig().getToml().getTable("lobby_spawn");
+        event.setRespawnLocation(new Location(Bukkit.getWorld(config.getString("world")), config.getDouble("x"), config.getDouble("y"), config.getDouble("z"), config.getDouble("yaw").floatValue(), config.getDouble("pitch").floatValue()));
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

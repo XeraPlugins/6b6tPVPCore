@@ -7,6 +7,7 @@ import me.ian.PVPHelper;
 import me.ian.arena.Arena;
 import me.ian.utils.PlayerUtils;
 import me.ian.utils.Utils;
+import net.minecraft.server.v1_12_R1.PacketPlayOutGameStateChange;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Firework;
@@ -63,14 +64,12 @@ public class Duel {
         Utils.broadcastMessage(PVPHelper.INSTANCE.getRunningConfig().getToml().getString("duel_win").replace("%winner%", player.getName()).replace("%health%", String.format("%.2f", player.getHealth())).replace("%max_health%", String.format("%.2f", player.getMaxHealth())));
         player.getWorld().spawn(player.getLocation(), Firework.class);
         Bukkit.getScheduler().runTaskLater(PVPHelper.INSTANCE, () -> {
-            participants.forEach(participant -> {
-                if (participant.isOnline()) {
-                    participant.setGameMode(GameMode.SURVIVAL);
-                    participant.setHealth(participant.getMaxHealth());
-                    participant.getInventory().clear();
-                    PlayerUtils.teleportToSpawn(participant);
-                }
-            });
+            if (player.isOnline() && arena.isPlayerWithinBounds(player)) {
+                PlayerUtils.teleportToSpawn(player);
+                player.setHealth(player.getMaxHealth());
+                player.getInventory().clear();
+            }
+
             arena.clear();
         }, 20 * 5L);
     }

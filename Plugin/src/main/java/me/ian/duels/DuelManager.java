@@ -61,8 +61,6 @@ public class DuelManager implements Listener {
         Player player = event.getPlayer().getBukkitEntity();
         duels.stream().filter(duel -> duel.getParticipants().contains(player)).findFirst().ifPresent(duel -> {
             duel.setActive(false);
-            event.setCancelled(true);
-            player.setGameMode(GameMode.SPECTATOR);
             for (Player participant : duel.getParticipants()) {
                 if (participant == player) continue;
                 duel.declareWinner(participant);
