@@ -12,6 +12,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -33,10 +34,11 @@ public class ItemVendor extends NPC {
     @Override
     public void onInteract(Player player) {
         player.setMetadata("vendor_gui", new FixedMetadataValue(PVPHelper.INSTANCE, this));
-        player.openInventory(genInitialInventory());
+        player.closeInventory(InventoryCloseEvent.Reason.PLUGIN);
+        player.openInventory(genInventory());
     }
 
-    public Inventory genInitialInventory() {
+    public Inventory genInventory() {
         Inventory inventory = Bukkit.createInventory(getEntityPlayer().getBukkitEntity(), 36, getName());
         for (int i = 0; i < inventory.getSize(); i++) {
             inventory.setItem(i, ItemUtils.ITEM_INDEX.get(1));
@@ -46,18 +48,7 @@ public class ItemVendor extends NPC {
         return inventory;
     }
 
-    public Inventory genInventory(int index) {
-        Inventory inventory = Bukkit.createInventory(getEntityPlayer().getBukkitEntity(), 36, getName());
-        for (int i = 0; i < inventory.getSize(); i++) {
-            inventory.setItem(i, ItemUtils.ITEM_INDEX.get(index));
-        }
-
-        inventory.setItem(27, genButton(index - 1, false));
-        inventory.setItem(35, genButton(index + 1, true));
-        return inventory;
-    }
-
-    private ItemStack genButton(int index, boolean next) {
+    public ItemStack genButton(int index, boolean next) {
         net.minecraft.server.v1_12_R1.ItemStack item = new net.minecraft.server.v1_12_R1.ItemStack(Blocks.STONE_BUTTON);
         NBTTagCompound compound = new NBTTagCompound();
         compound.setInt("next_item_index", index);

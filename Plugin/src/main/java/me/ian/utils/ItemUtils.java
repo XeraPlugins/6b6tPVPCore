@@ -1,11 +1,16 @@
 package me.ian.utils;
 
 import me.ian.duels.Duel;
+import net.minecraft.server.v1_12_R1.Blocks;
+import net.minecraft.server.v1_12_R1.NBTTagCompound;
+import net.minecraft.server.v1_12_R1.NBTTagList;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -24,16 +29,22 @@ public class ItemUtils {
         put(8, toItem(Material.DISPENSER));
         put(9, toItem(Material.REDSTONE_BLOCK));
         put(10, toItem(Material.HOPPER));
-        put(11, toItem(Material.DIAMOND_HELMET, "&aProtection Helmet", Enchantment.PROTECTION_ENVIRONMENTAL, Enchantment.DURABILITY, Enchantment.MENDING, Enchantment.VANISHING_CURSE));
-        put(12, toItem(Material.DIAMOND_CHESTPLATE, "&aProtection Chestplate", Enchantment.PROTECTION_ENVIRONMENTAL, Enchantment.DURABILITY, Enchantment.MENDING, Enchantment.VANISHING_CURSE));
-        put(13, toItem(Material.DIAMOND_LEGGINGS, "&aProtection Leggings", Enchantment.PROTECTION_ENVIRONMENTAL, Enchantment.DURABILITY, Enchantment.MENDING, Enchantment.VANISHING_CURSE));
-        put(14, toItem(Material.DIAMOND_BOOTS, "&aProtection Boots", Enchantment.PROTECTION_ENVIRONMENTAL, Enchantment.DURABILITY, Enchantment.MENDING, Enchantment.VANISHING_CURSE));
-        put(15, toItem(Material.DIAMOND_HELMET, "&cBlast-Prot Helmet", Enchantment.PROTECTION_EXPLOSIONS, Enchantment.DURABILITY, Enchantment.MENDING, Enchantment.VANISHING_CURSE));
-        put(16, toItem(Material.DIAMOND_CHESTPLATE, "&cBlast-Prot Chestplate", Enchantment.PROTECTION_EXPLOSIONS, Enchantment.DURABILITY, Enchantment.MENDING, Enchantment.VANISHING_CURSE));
-        put(17, toItem(Material.DIAMOND_LEGGINGS, "&cBlast-Prot Leggings", Enchantment.PROTECTION_EXPLOSIONS, Enchantment.DURABILITY, Enchantment.MENDING, Enchantment.VANISHING_CURSE));
-        put(18, toItem(Material.DIAMOND_BOOTS, "&cBlast-Prot Boots", Enchantment.PROTECTION_EXPLOSIONS, Enchantment.DURABILITY, Enchantment.MENDING, Enchantment.VANISHING_CURSE));
-        put(19, toItem(Material.DIAMOND_SWORD, "Diamond Sword", Enchantment.DAMAGE_ALL, Enchantment.DURABILITY, Enchantment.SWEEPING_EDGE, Enchantment.MENDING, Enchantment.VANISHING_CURSE));
-        put(20, toItem(Material.DIAMOND_PICKAXE, "Diamond Pickaxe", Enchantment.DIG_SPEED, Enchantment.DURABILITY, Enchantment.MENDING, Enchantment.VANISHING_CURSE));
+        put(11, toItem(Material.WEB));
+        put(12, toItem(Material.PISTON_BASE));
+        put(13, toItem(Material.ANVIL));
+        put(14, toItem(Material.DIAMOND_HELMET, "&aProtection Helmet", Enchantment.PROTECTION_ENVIRONMENTAL, Enchantment.DURABILITY, Enchantment.MENDING, Enchantment.VANISHING_CURSE));
+        put(15, toItem(Material.DIAMOND_CHESTPLATE, "&aProtection Chestplate", Enchantment.PROTECTION_ENVIRONMENTAL, Enchantment.DURABILITY, Enchantment.MENDING, Enchantment.VANISHING_CURSE));
+        put(16, toItem(Material.DIAMOND_LEGGINGS, "&aProtection Leggings", Enchantment.PROTECTION_ENVIRONMENTAL, Enchantment.DURABILITY, Enchantment.MENDING, Enchantment.VANISHING_CURSE));
+        put(17, toItem(Material.DIAMOND_BOOTS, "&aProtection Boots", Enchantment.PROTECTION_ENVIRONMENTAL, Enchantment.DURABILITY, Enchantment.MENDING, Enchantment.VANISHING_CURSE));
+        put(18, toItem(Material.DIAMOND_HELMET, "&cBlast-Prot Helmet", Enchantment.PROTECTION_EXPLOSIONS, Enchantment.DURABILITY, Enchantment.MENDING, Enchantment.VANISHING_CURSE));
+        put(19, toItem(Material.DIAMOND_CHESTPLATE, "&cBlast-Prot Chestplate", Enchantment.PROTECTION_EXPLOSIONS, Enchantment.DURABILITY, Enchantment.MENDING, Enchantment.VANISHING_CURSE));
+        put(20, toItem(Material.DIAMOND_LEGGINGS, "&cBlast-Prot Leggings", Enchantment.PROTECTION_EXPLOSIONS, Enchantment.DURABILITY, Enchantment.MENDING, Enchantment.VANISHING_CURSE));
+        put(21, toItem(Material.DIAMOND_BOOTS, "&cBlast-Prot Boots", Enchantment.PROTECTION_EXPLOSIONS, Enchantment.DURABILITY, Enchantment.MENDING, Enchantment.VANISHING_CURSE));
+        put(22, toItem(Material.DIAMOND_SWORD, Enchantment.DAMAGE_ALL, Enchantment.DURABILITY, Enchantment.SWEEPING_EDGE, Enchantment.MENDING, Enchantment.VANISHING_CURSE));
+        put(23, toItem(Material.DIAMOND_PICKAXE, Enchantment.DIG_SPEED, Enchantment.DURABILITY, Enchantment.MENDING, Enchantment.VANISHING_CURSE));
+        put(24, toItem(Material.BOW, Enchantment.ARROW_DAMAGE, Enchantment.ARROW_KNOCKBACK, Enchantment.ARROW_FIRE, Enchantment.MENDING, Enchantment.ARROW_INFINITE, Enchantment.DURABILITY, Enchantment.VANISHING_CURSE));
+        put(25, toItem(Material.TIPPED_ARROW));
+        put(26, gen32kShulker());
     }};
 
     public static boolean isIllegal(ItemStack itemStack) {
@@ -68,9 +79,16 @@ public class ItemUtils {
     }
 
     private static ItemStack toItem(Material material, String name, Enchantment... enchantments) {
-        ItemStack item = new ItemStack(material, material.getMaxStackSize());
+        ItemStack item = toItem(material, enchantments);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(Utils.translateChars(name));
+        item.setItemMeta(meta);
+        return item;
+    }
+
+    private static ItemStack toItem(Material material, Enchantment... enchantments) {
+        ItemStack item = new ItemStack(material, material.getMaxStackSize());
+        ItemMeta meta = item.getItemMeta();
         for (Enchantment enchantment : enchantments) {
             meta.addEnchant(enchantment, enchantment.getMaxLevel(), true);
         }
@@ -78,7 +96,50 @@ public class ItemUtils {
         return item;
     }
 
+    private static ItemStack toItem(Material material, Enchantment enchantment, int level) {
+        ItemStack item = new ItemStack(material, material.getMaxStackSize());
+        ItemMeta meta = item.getItemMeta();
+        meta.addEnchant(enchantment, level, true);
+        item.setItemMeta(meta);
+        return item;
+    }
+
     private static ItemStack toItem(Material material, short durability) {
         return new ItemStack(material, material.getMaxStackSize(), durability);
+    }
+
+    public static ItemStack gen32kShulker() {
+        NBTTagCompound blockEntityTag = new NBTTagCompound();
+        NBTTagList itemListTag = new NBTTagList();
+        for (int i = 0; i < 27; i++) {
+            NBTTagCompound itemTag = new NBTTagCompound();
+            itemTag.setByte("Slot", (byte) i);
+            itemTag.setString("id", "minecraft:diamond_sword");
+            itemTag.setByte("Count", (byte) 1);
+            itemTag.setShort("Damage", (short) 0);
+
+            // enchants
+            NBTTagCompound extraTag = new NBTTagCompound();
+            NBTTagList enchTag = new NBTTagList();
+            NBTTagCompound sharpTag = new NBTTagCompound();
+            sharpTag.setShort("id", (short) 16);
+            sharpTag.setShort("lvl", (short) 32767);
+            enchTag.add(sharpTag);
+            extraTag.set("ench", enchTag);
+            itemTag.set("tag", extraTag);
+
+            itemListTag.add(itemTag);
+        }
+        blockEntityTag.set("Items", itemListTag);
+
+        net.minecraft.server.v1_12_R1.ItemStack shulkerItem = new net.minecraft.server.v1_12_R1.ItemStack(Blocks.WHITE_SHULKER_BOX);
+        NBTTagCompound shulkerTag = new NBTTagCompound();
+        shulkerTag.set("BlockEntityTag", blockEntityTag);
+        NBTTagCompound displayTag = new NBTTagCompound();
+        displayTag.setString("Name", "32ks");
+        shulkerTag.set("display", displayTag);
+        shulkerItem.setTag(shulkerTag);
+
+        return CraftItemStack.asBukkitCopy(shulkerItem);
     }
 }
