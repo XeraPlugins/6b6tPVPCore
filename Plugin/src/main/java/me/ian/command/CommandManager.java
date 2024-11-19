@@ -26,7 +26,7 @@ public class CommandManager {
         commands = new ArrayList<>();
         commands.add(new ReloadConfigCommand());
         commands.add(new FacePlayerCommand());
-        commands.add(new SpawnNPCCommand());
+        commands.add(new NPCCommand());
         commands.add(new ArenaCommand());
         commands.add(new DuelCommand());
         commands.add(new KitCommand());

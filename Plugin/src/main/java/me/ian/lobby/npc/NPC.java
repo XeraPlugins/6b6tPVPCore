@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import me.ian.PVPHelper;
+import me.ian.lobby.npc.custom.ItemVendor;
+import me.ian.utils.NBTUtils;
 import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -24,7 +27,7 @@ import java.util.UUID;
  */
 @Getter
 @Setter
-public class NPC {
+public abstract class NPC {
 
     private Location location;
     private String name;
@@ -32,12 +35,14 @@ public class NPC {
     private EntityPlayer entityPlayer;
     private SkinTexture texture;
     private boolean facePlayers;
+    private final NBTTagCompound data;
 
     public NPC(Location location, String name, SkinTexture texture, boolean shouldFacePlayers) {
         this.location = location;
         this.name = name;
         this.texture = texture;
         this.facePlayers = shouldFacePlayers;
+        this.data = getNbtData();
     }
 
     public void spawn() {
@@ -48,8 +53,9 @@ public class NPC {
         entityPlayer = new EntityPlayer(server, worldServer, gameProfile, new PlayerInteractManager(worldServer));
         entityPlayer.setLocation(location.getX(), location.getY(), location.getZ(), 0.0f, 0.0f);
         entityPlayer.playerConnection = new PlayerConnection(server, new NetworkManager(EnumProtocolDirection.CLIENTBOUND), entityPlayer);
+        entityPlayer.setInvulnerable(true);
         worldServer.addEntity(entityPlayer);
-        Bukkit.getOnlinePlayers().forEach(this::show);
+        Bukkit.getOnlinePlayers().stream().filter(player -> player != entityPlayer.getBukkitEntity()).forEach(this::show);
     }
 
     public void lookAtPlayer(Player player) {
@@ -77,13 +83,15 @@ public class NPC {
     }
 
     public void remove() {
-        Bukkit.getOnlinePlayers().forEach(player -> {
-            PlayerConnection connection = ((CraftPlayer) player).getHandle().playerConnection;
-            connection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, entityPlayer));
-            PacketPlayOutEntityDestroy destroyPacket = new PacketPlayOutEntityDestroy(entityPlayer.getId());
-            connection.sendPacket(destroyPacket);
-        });
+        Bukkit.getOnlinePlayers().forEach(this::disappear);
         entityPlayer.die();
+    }
+
+    public void disappear(Player player) {
+        PlayerConnection connection = ((CraftPlayer) player).getHandle().playerConnection;
+        connection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, entityPlayer));
+        PacketPlayOutEntityDestroy destroyPacket = new PacketPlayOutEntityDestroy(entityPlayer.getId());
+        connection.sendPacket(destroyPacket);
     }
 
     public void show(Player player) {
@@ -96,10 +104,27 @@ public class NPC {
         DataWatcher watcher = entityPlayer.getDataWatcher();
         entityPlayer.getDataWatcher().set(new DataWatcherObject<>(13, DataWatcherRegistry.a), (byte) 0xFF);
         connection.sendPacket(new PacketPlayOutEntityMetadata(entityPlayer.getId(), watcher, true));
+
+        // remove from tablist afterwards
+        Bukkit.getScheduler().runTaskLater(PVPHelper.INSTANCE, () -> {
+            connection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, entityPlayer));
+        }, 10L);
     }
 
-    public void onInteract(Player player) {
+    public abstract void onInteract(Player player);
 
+
+    private NBTTagCompound getNbtData() {
+        NBTTagCompound compound = new NBTTagCompound();
+        compound.setString("Name", this.name);
+        NBTTagCompound skinTag = new NBTTagCompound();
+        skinTag.setString("texture", texture.getTexture());
+        skinTag.setString("signature", texture.getSignature());
+        compound.set("Skin", skinTag);
+        compound.setBoolean("FacePlayers", this.facePlayers);
+        NBTUtils.writeLocationToTag(compound, this.location);
+        compound.setBoolean("ItemVendor", this instanceof ItemVendor);
+        return compound;
     }
 
     @Data

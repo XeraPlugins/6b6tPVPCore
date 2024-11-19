@@ -11,6 +11,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -110,6 +111,22 @@ public class ItemUtils {
 
     public static ItemStack gen32kShulker() {
         NBTTagCompound blockEntityTag = new NBTTagCompound();
+        NBTTagList itemListTag = getNbtTagList();
+        blockEntityTag.set("Items", itemListTag);
+
+        net.minecraft.server.v1_12_R1.ItemStack shulkerItem = new net.minecraft.server.v1_12_R1.ItemStack(Blocks.WHITE_SHULKER_BOX);
+        NBTTagCompound shulkerTag = new NBTTagCompound();
+        shulkerTag.set("BlockEntityTag", blockEntityTag);
+        NBTTagCompound displayTag = new NBTTagCompound();
+        displayTag.setString("Name", "32ks");
+        shulkerTag.set("display", displayTag);
+        shulkerItem.setTag(shulkerTag);
+
+        return CraftItemStack.asBukkitCopy(shulkerItem);
+    }
+
+    @NotNull
+    private static NBTTagList getNbtTagList() {
         NBTTagList itemListTag = new NBTTagList();
         for (int i = 0; i < 27; i++) {
             NBTTagCompound itemTag = new NBTTagCompound();
@@ -130,16 +147,6 @@ public class ItemUtils {
 
             itemListTag.add(itemTag);
         }
-        blockEntityTag.set("Items", itemListTag);
-
-        net.minecraft.server.v1_12_R1.ItemStack shulkerItem = new net.minecraft.server.v1_12_R1.ItemStack(Blocks.WHITE_SHULKER_BOX);
-        NBTTagCompound shulkerTag = new NBTTagCompound();
-        shulkerTag.set("BlockEntityTag", blockEntityTag);
-        NBTTagCompound displayTag = new NBTTagCompound();
-        displayTag.setString("Name", "32ks");
-        shulkerTag.set("display", displayTag);
-        shulkerItem.setTag(shulkerTag);
-
-        return CraftItemStack.asBukkitCopy(shulkerItem);
+        return itemListTag;
     }
 }

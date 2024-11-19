@@ -15,9 +15,11 @@ commands:
   faceplayer:
     description: "faces two players towards each other"
     usage: "/faceplayer [player]"
-  spawnnpc:
+  npc:
     description: "spawn a non-playable character"
-    usage: "/spawnnpc"
+    usage: |
+      /npc create <name> [vendor] [skinUUID] - Create an NPC or Item Vendor with an optional skin UUID.
+      /npc remove <name> - Remove an NPC by its name.
   duel:
     description: "1v1 another player"
     usage: "/duel [player]"
