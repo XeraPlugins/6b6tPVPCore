@@ -64,13 +64,13 @@ public class Duel {
         Utils.broadcastMessage(PVPHelper.INSTANCE.getRunningConfig().getToml().getString("duel_win").replace("%winner%", player.getName()).replace("%health%", String.format("%.2f", player.getHealth())).replace("%max_health%", String.format("%.2f", player.getMaxHealth())));
         player.getWorld().spawn(player.getLocation(), Firework.class);
         Bukkit.getScheduler().runTaskLater(PVPHelper.INSTANCE, () -> {
-            if (player.isOnline() && arena.isPlayerWithinBounds(player)) {
+            arena.clear();
+            if (player.isOnline()) {
                 PlayerUtils.teleportToSpawn(player);
                 player.setHealth(player.getMaxHealth());
                 player.getInventory().clear();
             }
 
-            arena.clear();
-        }, 20 * 5L);
+        }, 50L);
     }
 }

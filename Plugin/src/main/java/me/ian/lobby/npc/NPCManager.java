@@ -157,14 +157,14 @@ public class NPCManager implements Listener {
                 .filter(npc -> npc.getLocation().distance(player.getLocation()) < 30) // Within 30 blocks
                 .forEach(npc -> npc.lookAtPlayer(player));
 
-        // Handle chunk transitions
-        Location from = event.getFrom();
-        Location to = event.getTo();
-        if (!to.getChunk().equals(from.getChunk())) {
-            npcs.stream().filter(npc -> npc.getEntityPlayer().getBukkitEntity().getChunk() == to.getChunk()).forEach(npc -> {
-                npc.show(player);
-            });
-        }
+//        // Handle chunk transitions
+//        Location from = event.getFrom();
+//        Location to = event.getTo();
+//        if (!to.getChunk().equals(from.getChunk())) {
+//            npcs.stream().filter(npc -> npc.getEntityPlayer().getBukkitEntity().getChunk() == to.getChunk()).forEach(npc -> {
+//                npc.show(player);
+//            });
+//        }
     }
 
 
