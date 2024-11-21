@@ -6,8 +6,8 @@ import lombok.Getter;
 import lombok.SneakyThrows;
 import me.ian.PVPHelper;
 
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
+import java.nio.file.Files;
 
 /**
  * @author SevJ6
@@ -28,12 +28,14 @@ public class Config {
         this.configFile = new File(dataFolder, name);
         try {
             if (configFile.exists()) {
-                loadConfig();  // Load the existing TOML config
+                loadConfig();
             } else {
                 // Load and save the default config
-                configFile.createNewFile();
-                this.toml = new Toml().read(PVPHelper.class.getResourceAsStream("/config.toml"));
-                saveConfig();
+                InputStream resourceStream = PVPHelper.class.getResourceAsStream("/" + name);
+                if (resourceStream == null) throw new FileNotFoundException("Default config resource not found!");
+
+                Files.copy(resourceStream, configFile.toPath());
+                loadConfig(); // Load the copied file
             }
         } catch (Throwable t) {
             t.printStackTrace();
@@ -43,14 +45,32 @@ public class Config {
     // Method to load an existing TOML config
     @SneakyThrows
     public void loadConfig() {
-        FileReader fileReader = new FileReader(configFile);
-        this.toml = new Toml().read(fileReader);
+        try (FileReader fileReader = new FileReader(configFile)) {
+            this.toml = new Toml().read(fileReader);
+        }
     }
 
     // Save the config back to the TOML config
     @SneakyThrows
     public void saveConfig() {
-        TomlWriter tomlWriter = new TomlWriter();
-        tomlWriter.write(toml.toMap(), configFile);
+        try (BufferedReader reader = new BufferedReader(new FileReader(configFile))) {
+            // Read original file into a string
+            StringBuilder originalContent = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                originalContent.append(line).append(System.lineSeparator());
+            }
+
+            // Parse the TOML as a map and write back using TomlWriter
+            TomlWriter tomlWriter = new TomlWriter();
+            StringWriter writer = new StringWriter();
+            tomlWriter.write(toml.toMap(), writer);
+
+            // Replace original file content while keeping original formatting
+            try (BufferedWriter fileWriter = new BufferedWriter(new FileWriter(configFile))) {
+                fileWriter.write(originalContent.toString());
+                fileWriter.append(writer.toString());
+            }
+        }
     }
 }
