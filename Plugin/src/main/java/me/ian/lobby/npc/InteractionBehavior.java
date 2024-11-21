@@ -1,9 +1,7 @@
 package me.ian.lobby.npc;
 
 import me.ian.PVPHelper;
-import me.ian.arena.ArenaManager;
 import me.ian.kits.Kit;
-import me.ian.kits.KitManager;
 import me.ian.utils.ItemUtils;
 import me.ian.utils.Utils;
 import net.minecraft.server.v1_12_R1.NBTTagCompound;
@@ -43,7 +41,7 @@ public enum InteractionBehavior {
             List<Kit> globalKits = PVPHelper.INSTANCE.getKitManager().getGlobalKits();
             Optional.ofNullable(globalKits.get(ThreadLocalRandom.current().nextInt(0, globalKits.size()))).ifPresent(kit -> {
                 kit.equip(player);
-                Utils.sendMessage(player, String.format("<%s> I just gave you a random kit!", npc.getName()));
+                Utils.sendMessage(player, String.format("<%s> I just gave you a random global kit!", npc.getName()));
             });
         }
     },

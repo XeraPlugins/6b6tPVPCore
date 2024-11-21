@@ -28,7 +28,6 @@ public class KitCommand extends PluginCommand implements CommandExecutor {
         Player player = (Player) sender;
         KitManager kitManager = PVPHelper.INSTANCE.getKitManager();
 
-        // TODO: implement kit system
         switch (label) {
             case "kit":
                 if (args.length == 0) {

@@ -147,7 +147,7 @@ public class NPCManager implements Listener {
 
     }
 
-
+    // Handle interaction behavior
     @EventHandler(priority = EventPriority.LOW)
     public void onInteract(PlayerInteractAtEntityEvent event) {
         if (event.getRightClicked() instanceof Player) {
