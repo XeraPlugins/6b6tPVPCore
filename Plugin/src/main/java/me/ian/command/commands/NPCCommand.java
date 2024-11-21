@@ -2,15 +2,19 @@ package me.ian.command.commands;
 
 import me.ian.PVPHelper;
 import me.ian.command.PluginCommand;
+import me.ian.lobby.npc.InteractionBehavior;
 import me.ian.lobby.npc.NPC;
 import me.ian.lobby.npc.NPCManager;
-import me.ian.lobby.npc.custom.ItemVendor;
 import me.ian.utils.PlayerUtils;
 import me.ian.utils.Utils;
+import net.minecraft.server.v1_12_R1.NBTTagCompound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
  * @author SevJ6
@@ -26,82 +30,97 @@ public class NPCCommand extends PluginCommand implements CommandExecutor {
             sender.sendMessage("Only players can use this command!");
             return true;
         }
+
         Player player = (Player) sender;
 
-        if (args.length < 1) {
-            Utils.sendMessage(player, "&cUsage: " + command.getUsage());
+        if (args.length < 2) {
+            Utils.sendMessage(player, "&cUsage: /npc <create|remove> <name> [options...]");
             return true;
         }
 
         NPCManager npcManager = PVPHelper.INSTANCE.getNpcManager();
+        String action = args[0].toLowerCase();
+        String name = args[1];
 
-        switch (args[0].toLowerCase()) {
-            // Create NPCs
+        switch (action) {
             case "create":
-                if (args.length < 2) {
-                    Utils.sendMessage(player, "&cPlease enter a name!");
-                    break;
-                }
-
-                String name = args[1];
-                String defaultSkinUuid = PVPHelper.INSTANCE.getRunningConfig().getToml().getString("default_skin_uuid");
-                boolean isVendor = args.length > 2 && args[2].equalsIgnoreCase("vendor");
-
+                // Validate that the NPC name is unique
                 if (npcManager.getNPC(name) != null) {
-                    Utils.sendMessage(player, "&cAn NPC with that name already exists!");
-                    break;
+                    Utils.sendMessage(player, "&cAn NPC with this name already exists!");
+                    return true;
                 }
 
-                if (isVendor) {
-                    ItemVendor vendor = new ItemVendor(
-                            player.getLocation(),
-                            name,
-                            PlayerUtils.getSkinProperties(args.length > 3 ? args[3] : defaultSkinUuid),
-                            true
-                    );
-                    npcManager.createNPC(vendor);
-                    Utils.sendMessage(player, "&aItem Vendor NPC created with name: &e" + name);
-                } else {
-                    NPC npc = new NPC(
-                            player.getLocation(),
-                            name,
-                            PlayerUtils.getSkinProperties(args.length > 2 ? args[2] : defaultSkinUuid),
-                            true
-                    ) {
-                        @Override
-                        public void onInteract(Player player) {
-
-                        }
-                    };
-                    npcManager.createNPC(npc);
-                    Utils.sendMessage(player, "&aNPC created with name: &e" + name);
+                // Parse behavior if provided
+                InteractionBehavior behavior = InteractionBehavior.NONE; // Default behavior
+                if (args.length > 2) {
+                    try {
+                        behavior = InteractionBehavior.valueOf(args[2].toUpperCase());
+                    } catch (IllegalArgumentException e) {
+                        Utils.sendMessage(player, "&cInvalid behavior specified! Available behaviors: " +
+                                Arrays.stream(InteractionBehavior.values())
+                                        .map(Enum::name)
+                                        .collect(Collectors.joining(", ")));
+                        return true;
+                    }
                 }
+
+                // Parse optional skin UUID
+                String skinUuid = args.length > 3 ? args[3] : PVPHelper.INSTANCE.getRunningConfig().getToml().getString("default_skin_uuid");
+
+                // Handle arena name if behavior is SEND_TO_ARENA
+                String arenaName = null;
+                if (behavior == InteractionBehavior.SEND_TO_ARENA) {
+                    if (args.length < 5) {
+                        Utils.sendMessage(player, "&cYou must specify an arena name when using the SEND_TO_ARENA behavior!");
+                        return true;
+                    }
+                    arenaName = args[4];
+
+                    // Validate that the arena exists
+                    if (PVPHelper.INSTANCE.getArenaManager().getArena(arenaName) == null) {
+                        Utils.sendMessage(player, "&cThe specified arena '" + arenaName + "' does not exist!");
+                        return true;
+                    }
+                }
+
+                NPC npc = new NPC(
+                        player.getLocation(),
+                        name,
+                        PlayerUtils.getSkinProperties(skinUuid),
+                        true,
+                        behavior
+                );
+
+                // Save the arena name to the NPC's NBT data if applicable
+                if (arenaName != null) {
+                    NBTTagCompound data = npc.getData();
+                    data.setString("arena_endpoint", arenaName);
+                    npc.setData(data);
+                }
+
+                npcManager.createNPC(npc);
+                Utils.sendMessage(player, "&aNPC '" + name + "' created with behavior '" + behavior.name() + "'.");
                 break;
 
-            // Remove NPCs
             case "remove":
-                if (args.length < 2) {
-                    Utils.sendMessage(player, "&cPlease specify the name of the NPC to remove!");
-                    break;
+                if (npcManager.getNPC(name) == null) {
+                    Utils.sendMessage(player, "&cNo NPC found with the name '" + name + "'.");
+                    return true;
                 }
 
-                String npcNameToRemove = args[1];
-                boolean removed = npcManager.removeNPC(npcNameToRemove);
-
-                if (removed) {
-                    Utils.sendMessage(player, "&aSuccessfully removed NPC: &e" + npcNameToRemove);
-                } else {
-                    Utils.sendMessage(player, "&cCould not remove NPC: &e" + npcNameToRemove + " &c(NPC not found or deletion failed).");
-                }
+                npcManager.removeNPC(name);
+                Utils.sendMessage(player, "&aNPC '" + name + "' has been removed.");
                 break;
 
             default:
-                Utils.sendMessage(player, "&cUsage: " + command.getUsage());
+                Utils.sendMessage(player, "&cUsage: /npc <create|remove> <name> [options...]");
                 break;
         }
 
         return true;
     }
 
-
 }
+
+
+

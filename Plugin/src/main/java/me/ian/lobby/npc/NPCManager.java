@@ -1,7 +1,6 @@
 package me.ian.lobby.npc;
 
 import me.ian.PVPHelper;
-import me.ian.lobby.npc.custom.ItemVendor;
 import me.ian.utils.ItemUtils;
 import me.ian.utils.NBTUtils;
 import me.ian.utils.Utils;
@@ -66,18 +65,10 @@ public class NPCManager implements Listener {
                         );
                         Location location = NBTUtils.readLocationFromTag(compound);
                         boolean shouldFacePlayers = compound.getBoolean("FacePlayers");
+                        InteractionBehavior behavior = InteractionBehavior.valueOf(compound.getString("Behavior"));
 
-                        // Determine if NPC is an ItemVendor
-                        NPC npc = compound.getBoolean("ItemVendor")
-                                ? new ItemVendor(location, name, texture, shouldFacePlayers)
-                                : new NPC(location, name, texture, shouldFacePlayers) {
-                            @Override
-                            public void onInteract(Player player) {
-
-                            }
-                        };
-
-                        // Add to NPC list
+                        // Create and add NPC to the list
+                        NPC npc = new NPC(location, name, texture, shouldFacePlayers, behavior);
                         this.npcs.add(npc);
                         return npc;
                     } catch (Exception e) {
@@ -117,9 +108,9 @@ public class NPCManager implements Listener {
         return npcs.stream().filter(npc -> npc.getName().equals(name)).findAny().orElse(null);
     }
 
-    public boolean removeNPC(String name) {
+    public void removeNPC(String name) {
         NPC npc = getNPC(name);
-        if (npc == null) return false;
+        if (npc == null) return;
         npcs.remove(npc);
         npc.remove();
 
@@ -127,14 +118,11 @@ public class NPCManager implements Listener {
         if (file.exists()) {
             if (file.delete()) {
                 PVPHelper.INSTANCE.getLogger().info("Successfully deleted NPC file: " + file.getName());
-                return true;
             } else {
                 PVPHelper.INSTANCE.getLogger().warning("Failed to delete NPC file: " + file.getName());
-                return false;
             }
         } else {
             PVPHelper.INSTANCE.getLogger().warning("NPC file not found for deletion: " + file.getName());
-            return false;
         }
     }
 
@@ -160,7 +148,6 @@ public class NPCManager implements Listener {
     }
 
 
-
     @EventHandler(priority = EventPriority.LOW)
     public void onInteract(PlayerInteractAtEntityEvent event) {
         if (event.getRightClicked() instanceof Player) {
@@ -169,6 +156,7 @@ public class NPCManager implements Listener {
         }
     }
 
+    // Event logic for Item Vendor NPCs
     @EventHandler
     public void onClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
@@ -221,9 +209,9 @@ public class NPCManager implements Listener {
                             break;
                     }
 
-                    ItemVendor vendor = (ItemVendor) player.getMetadata("vendor_gui").get(0).value();
-                    if (index > 1) inventory.setItem(27, vendor.genButton(index - 1, false));
-                    if (index != ItemUtils.ITEM_INDEX.size()) inventory.setItem(35, vendor.genButton(index + 1, true));
+                    if (index > 1) inventory.setItem(27, ItemUtils.genButton(index - 1, false));
+                    if (index != ItemUtils.ITEM_INDEX.size())
+                        inventory.setItem(35, ItemUtils.genButton(index + 1, true));
                 }
             }
         }

@@ -59,6 +59,13 @@ public enum InteractionBehavior {
                 });
             }
         }
+    },
+
+    NONE {
+        @Override
+        public void execute(Player player, NPC npc) {
+
+        }
     };
 
     public abstract void execute(Player player, NPC npc);

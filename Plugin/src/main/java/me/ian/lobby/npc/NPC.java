@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import me.ian.PVPHelper;
-import me.ian.lobby.npc.custom.ItemVendor;
 import me.ian.utils.NBTUtils;
 import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.Bukkit;
@@ -27,7 +26,7 @@ import java.util.UUID;
  */
 @Getter
 @Setter
-public abstract class NPC {
+public class NPC {
 
     private Location location;
     private String name;
@@ -36,12 +35,14 @@ public abstract class NPC {
     private SkinTexture texture;
     private boolean facePlayers;
     private NBTTagCompound data;
+    private InteractionBehavior behavior;
 
-    public NPC(Location location, String name, SkinTexture texture, boolean shouldFacePlayers) {
+    public NPC(Location location, String name, SkinTexture texture, boolean shouldFacePlayers, InteractionBehavior behavior) {
         this.location = location;
         this.name = name;
         this.texture = texture;
         this.facePlayers = shouldFacePlayers;
+        this.behavior = behavior;
         this.data = getNbtData();
     }
 
@@ -111,7 +112,9 @@ public abstract class NPC {
         }, 10L);
     }
 
-    public abstract void onInteract(Player player);
+    public void onInteract(Player player) {
+        behavior.execute(player, this);
+    }
 
 
     private NBTTagCompound getNbtData() {
@@ -123,7 +126,7 @@ public abstract class NPC {
         compound.set("Skin", skinTag);
         compound.setBoolean("FacePlayers", this.facePlayers);
         NBTUtils.writeLocationToTag(compound, this.location);
-        compound.setBoolean("ItemVendor", this instanceof ItemVendor);
+        compound.setString("Behavior", behavior.name());
         return compound;
     }
 
