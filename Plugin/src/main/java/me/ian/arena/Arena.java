@@ -6,7 +6,13 @@ import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.blocks.BaseBlock;
 import com.sk89q.worldedit.bukkit.BukkitUtil;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
+import com.sk89q.worldedit.extent.MaskingExtent;
+import com.sk89q.worldedit.extent.inventory.BlockBagExtent;
+import com.sk89q.worldedit.function.mask.BlockMask;
+import com.sk89q.worldedit.function.mask.Mask;
 import com.sk89q.worldedit.function.operation.Operations;
+import com.sk89q.worldedit.function.pattern.BlockPattern;
+import com.sk89q.worldedit.masks.BlockTypeMask;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -19,9 +25,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Getter
@@ -119,23 +123,35 @@ public class Arena {
         return randomLocation;
     }
 
-
-
     @SneakyThrows
     public void clear() {
-        CuboidRegion region = new CuboidRegion(BukkitUtil.getLocalWorld(getWorld()), new Vector(pointA.getX(), pointA.getY(), pointA.getZ()), new Vector(pointB.getX(), pointB.getY(), pointB.getZ()));
-        EditSession session = WorldEdit.getInstance().getEditSessionFactory().getEditSession(new BukkitWorld(getWorld()), region.getArea());
-        for (int x = region.getMinimumPoint().getBlockX(); x <= region.getMaximumPoint().getBlockX(); x++) {
-            for (int y = region.getMinimumPoint().getBlockY(); y <= region.getMaximumPoint().getBlockY(); y++) {
-                for (int z = region.getMinimumPoint().getBlockZ(); z <= region.getMaximumPoint().getBlockZ(); z++) {
-                    if (getWorld().getBlockAt(x, y, z).getType() != Material.BEDROCK) {
-                        session.setBlock(new Vector(x, y, z), new BaseBlock(0));
-                    }
-                }
-            }
+        // Define the WorldEdit region
+        CuboidRegion region = new CuboidRegion(
+                BukkitUtil.getLocalWorld(getWorld()),
+                new Vector(pointA.getX(), pointA.getY(), pointA.getZ()),
+                new Vector(pointB.getX(), pointB.getY(), pointB.getZ())
+        );
+
+        // Create an EditSession with a higher block limit for efficiency
+        EditSession session = WorldEdit.getInstance()
+                .getEditSessionFactory()
+                .getEditSession(new BukkitWorld(getWorld()), -1); // Unlimited blocks
+
+        try {
+            session.replaceBlocks(
+                    region,
+                    new HashSet<>(Collections.singletonList(new BaseBlock(Material.BEDROCK.getId()))), // Target only non-bedrock
+                    new BaseBlock(0) // Replace with air
+            );
+
+            // Commit changes
+            Operations.complete(session.commit());
+        } finally {
+            session.flushQueue();
         }
-        Operations.complete(session.commit());
-        session.flushQueue();
-        getEntities().forEach(Entity::remove); // remove all entities
+
+        // Remove entities within the region
+        getEntities().forEach(Entity::remove);
     }
+
 }
