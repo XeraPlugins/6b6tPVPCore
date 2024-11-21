@@ -70,7 +70,7 @@ public class NPCCommand extends PluginCommand implements CommandExecutor {
                     ) {
                         @Override
                         public void onInteract(Player player) {
-                            System.out.println("test");
+
                         }
                     };
                     npcManager.createNPC(npc);

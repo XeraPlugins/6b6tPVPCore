@@ -21,6 +21,7 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Getter
@@ -74,6 +75,51 @@ public class Arena {
                 .filter(entity -> isLocationWithinBounds(entity.getLocation()))
                 .collect(Collectors.toList());
     }
+
+    public double getRadius() {
+        // Calculate the center of the bounding box
+        double centerX = (pointA.getX() + pointB.getX()) / 2;
+        double centerY = (pointA.getY() + pointB.getY()) / 2;
+        double centerZ = (pointA.getZ() + pointB.getZ()) / 2;
+
+        // Find the distance from the center to one corner of the bounding box
+        double cornerX = Math.max(pointA.getX(), pointB.getX());
+        double cornerY = Math.max(pointA.getY(), pointB.getY());
+        double cornerZ = Math.max(pointA.getZ(), pointB.getZ());
+
+        return Math.sqrt(
+                Math.pow(centerX - cornerX, 2) +
+                        Math.pow(centerY - cornerY, 2) +
+                        Math.pow(centerZ - cornerZ, 2)
+        );
+    }
+
+
+    public Location getRandomLocation() {
+        Random random = new Random();
+
+        // Calculate the center of the bounding box
+        double centerX = (pointA.getX() + pointB.getX()) / 2;
+        double centerZ = (pointA.getZ() + pointB.getZ()) / 2;
+
+        double radius = getRadius();
+
+        Location randomLocation;
+        do {
+            // Generate random coordinates within the bounding box
+            double randomX = centerX + (random.nextDouble() * 2 - 1) * radius;
+            double randomZ = centerZ + (random.nextDouble() * 2 - 1) * radius;
+
+            // Create the random location
+            randomLocation = getWorld().getHighestBlockAt((int) Math.round(randomX), (int) Math.round(randomZ)).getLocation().add(0.5, 0.0, 0.5);
+
+            // Check if the random location is within the radius
+        } while (!isLocationWithinBounds(randomLocation));
+
+        return randomLocation;
+    }
+
+
 
     @SneakyThrows
     public void clear() {

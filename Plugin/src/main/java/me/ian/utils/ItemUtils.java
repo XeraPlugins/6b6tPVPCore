@@ -97,14 +97,6 @@ public class ItemUtils {
         return item;
     }
 
-    private static ItemStack toItem(Material material, Enchantment enchantment, int level) {
-        ItemStack item = new ItemStack(material, material.getMaxStackSize());
-        ItemMeta meta = item.getItemMeta();
-        meta.addEnchant(enchantment, level, true);
-        item.setItemMeta(meta);
-        return item;
-    }
-
     private static ItemStack toItem(Material material, short durability) {
         return new ItemStack(material, material.getMaxStackSize(), durability);
     }
@@ -148,5 +140,16 @@ public class ItemUtils {
             itemListTag.add(itemTag);
         }
         return itemListTag;
+    }
+
+    public static ItemStack genButton(int index, boolean next) {
+        net.minecraft.server.v1_12_R1.ItemStack item = new net.minecraft.server.v1_12_R1.ItemStack(Blocks.STONE_BUTTON);
+        NBTTagCompound compound = new NBTTagCompound();
+        compound.setInt("next_item_index", index);
+        NBTTagCompound display = new NBTTagCompound();
+        display.setString("Name", Utils.translateChars(next ? "&aNext" : "&cBack"));
+        compound.set("display", display);
+        item.setTag(compound);
+        return CraftItemStack.asBukkitCopy(item);
     }
 }

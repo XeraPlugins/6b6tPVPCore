@@ -35,7 +35,7 @@ public abstract class NPC {
     private EntityPlayer entityPlayer;
     private SkinTexture texture;
     private boolean facePlayers;
-    private final NBTTagCompound data;
+    private NBTTagCompound data;
 
     public NPC(Location location, String name, SkinTexture texture, boolean shouldFacePlayers) {
         this.location = location;
