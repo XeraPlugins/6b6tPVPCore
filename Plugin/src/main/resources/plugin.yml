@@ -11,21 +11,19 @@ commands:
     aliases:
       - rlc
       - rlconf
-    usage: "/reloadconfig"
+    usage: "Usage: /reloadconfig"
   faceplayer:
     description: "faces two players towards each other"
-    usage: "/faceplayer [player]"
+    usage: "Usage: /faceplayer [player]"
   npc:
     description: "spawn a non-playable character"
-    usage: |
-      /npc create <name> [vendor] [skinUUID] - Create an NPC or Item Vendor with an optional skin UUID.
-      /npc remove <name> - Remove an NPC by its name.
+    usage: "Usage: /npc <create|remove> <name> [options...]"
   duel:
     description: "1v1 another player"
-    usage: "/duel [player]"
+    usage: "Usage: /duel [player]"
   arena:
     description: "create a new arena within two points"
-    usage: "/createarena [name] [duel] OR /cleararenas OR /removearena [name] OR /listarenas"
+    usage: "Usage: /createarena [name] [duel] OR /cleararenas OR /removearena [name] OR /listarenas"
     aliases:
       - createarena
       - cleararenas
@@ -34,7 +32,7 @@ commands:
       - arenawand
   kit:
     description: "give yourself items with pre-set inventory loadouts"
-    usage: "/kit [name] OR /createukit [name] OR /creategkit [name] OR /removeukit [name] OR /removegkit [name]"
+    usage: "Usage: /kit [name] OR /createukit [name] OR /creategkit [name] OR /removeukit [name] OR /removegkit [name]"
     aliases:
       - createukit
       - creategkit
