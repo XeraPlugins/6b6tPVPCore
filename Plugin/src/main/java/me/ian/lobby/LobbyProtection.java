@@ -54,8 +54,13 @@ public class LobbyProtection implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onFall(EntityDamageEvent event) {
-        if (event.getEntity() instanceof Player && event.getCause() == EntityDamageEvent.DamageCause.FALL) {
+        if (arenaManager.isLocationInArena(event.getEntity().getLocation())) {
             event.setCancelled(true);
+            return;
+        }
+
+        if (event.getEntity() instanceof Player && event.getCause() == EntityDamageEvent.DamageCause.FALL) {
+            if (((Player) event.getEntity()).getHealth() - event.getDamage() <= 0.0D) event.setDamage(0.0D);
         }
     }
 }

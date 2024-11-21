@@ -56,29 +56,35 @@ public class DuelManager implements Listener {
         event.setCancelled(duels.stream().anyMatch(duel -> duel.getParticipants().contains(event.getPlayer()) && !duel.isActive() && !duel.isWinnerDeclared()));
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.HIGH)
     public void onPreDeath(PlayerPreDeathEvent event) {
-        Player player = event.getPlayer().getBukkitEntity();
-        duels.stream().filter(duel -> duel.getParticipants().contains(player)).findFirst().ifPresent(duel -> {
-            duel.setActive(false);
-            for (Player participant : duel.getParticipants()) {
-                if (participant == player) continue;
-                duel.declareWinner(participant);
-            }
-            duels.remove(duel);
-        });
+        handleDeclaration(event.getPlayer().getBukkitEntity());
     }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onQuit(PlayerQuitEvent event) {
-        Player player = event.getPlayer();
-        duels.stream().filter(duel -> duel.getParticipants().contains(player)).findFirst().ifPresent(duel -> {
+        handleDeclaration(event.getPlayer());
+    }
+
+    private Duel findDuelByPlayer(Player player) {
+        return duels.stream()
+                .filter(duel -> duel.getParticipants().contains(player))
+                .findFirst()
+                .orElse(null); // Return null if no duel found
+    }
+
+    private void handleDeclaration(Player player) {
+        Duel duel = findDuelByPlayer(player);
+
+        if (duel != null) {
             duel.setActive(false);
-            for (Player participant : duel.getParticipants()) {
-                if (participant == player) continue;
-                duel.declareWinner(participant);
-            }
+
+            // Declare the winner for the other participant
+            duel.getParticipants().stream()
+                    .filter(participant -> !participant.equals(player))
+                    .findFirst().ifPresent(duel::declareWinner);
+
             duels.remove(duel);
-        });
+        }
     }
 }

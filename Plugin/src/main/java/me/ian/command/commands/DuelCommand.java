@@ -2,6 +2,7 @@ package me.ian.command.commands;
 
 import me.ian.PVPHelper;
 import me.ian.arena.Arena;
+import me.ian.arena.ArenaManager;
 import me.ian.command.PluginCommand;
 import me.ian.duels.Duel;
 import me.ian.utils.Utils;
@@ -40,6 +41,7 @@ public class DuelCommand extends PluginCommand implements CommandExecutor {
             return true;
         }
 
+        ArenaManager arenaManager = PVPHelper.INSTANCE.getArenaManager();
         String subCommand = args[0].toLowerCase();
         switch (subCommand) {
             case "accept": {
@@ -52,6 +54,12 @@ public class DuelCommand extends PluginCommand implements CommandExecutor {
                 Player challenger = Bukkit.getPlayer(challengerUUID);
                 if (challenger == null || !challenger.isOnline()) {
                     Utils.sendMessage(player, "&cThe player who challenged you is no longer online.");
+                    duelRequests.remove(player.getUniqueId());
+                    return true;
+                }
+
+                if (arenaManager.isPlayerInArena(player)) {
+                    Utils.sendMessage(player, "&cYou can not accept a duel request while you are in an arena.");
                     duelRequests.remove(player.getUniqueId());
                     return true;
                 }
@@ -97,6 +105,11 @@ public class DuelCommand extends PluginCommand implements CommandExecutor {
 
                 if (player.equals(target)) {
                     Utils.sendMessage(player, "&cYou cannot duel yourself.");
+                    return true;
+                }
+
+                if (arenaManager.isPlayerInArena(target)) {
+                    Utils.sendMessage(player, "&c" + target.getName() + " is currently inside an arena. You can not request to duel them at this time.");
                     return true;
                 }
 

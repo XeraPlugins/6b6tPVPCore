@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.logging.Level;
 
 @Getter
@@ -95,21 +96,18 @@ public class ArenaManager implements Listener {
         return arenas.stream().filter(arena -> arena.getName().equals(name)).findAny().orElse(null);
     }
 
+    private boolean isWithinBounds(Function<Arena, Boolean> condition) {
+        return arenas.stream().anyMatch(condition::apply);
+    }
+
     public boolean isPlayerInArena(Player player) {
-        for (Arena arena : arenas) {
-            if (!arena.isPlayerWithinBounds(player)) continue;
-            return true;
-        }
-        return false;
+        return isWithinBounds(arena -> arena.isPlayerWithinBounds(player));
     }
 
     public boolean isLocationInArena(Location location) {
-        for (Arena arena : arenas) {
-            if (!arena.isLocationWithinBounds(location)) continue;
-            return true;
-        }
-        return false;
+        return isWithinBounds(arena -> arena.isLocationWithinBounds(location));
     }
+
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
