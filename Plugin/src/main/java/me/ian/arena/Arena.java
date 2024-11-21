@@ -113,8 +113,8 @@ public class Arena {
             // Create the random location
             randomLocation = getWorld().getHighestBlockAt((int) Math.round(randomX), (int) Math.round(randomZ)).getLocation().add(0.5, 0.0, 0.5);
 
-            // Check if the random location is within the radius
-        } while (!isLocationWithinBounds(randomLocation));
+            // Check if the random location is within the radius and make sure there aren't any players nearby
+        } while (!isLocationWithinBounds(randomLocation) && !randomLocation.getNearbyPlayers(6).isEmpty());
 
         return randomLocation;
     }
