@@ -115,12 +115,22 @@ public class Arena {
             double randomZ = centerZ + (random.nextDouble() * 2 - 1) * radius;
 
             // Create the random location
-            randomLocation = getWorld().getHighestBlockAt((int) Math.round(randomX), (int) Math.round(randomZ)).getLocation().add(0.5, 0.0, 0.5);
+            randomLocation = highestSpotAtLoccation(new Location(getWorld(), randomX, -1, randomZ));
 
             // Check if the random location is within the radius and make sure there aren't any players nearby
         } while (!isLocationWithinBounds(randomLocation) && !randomLocation.getNearbyPlayers(6).isEmpty());
 
         return randomLocation;
+    }
+
+    // Override bukkit's World.getHighestBlockAt method. Not sure why but it just fucks up sometimes
+    public Location highestSpotAtLoccation(Location location) {
+        Location clone = location.clone();
+        for (double y = 255; y > 0; y--) {
+            clone.setY(y);
+            if (!clone.getBlock().isEmpty()) break;
+        }
+        return clone.add(0.0, 1.0, 0.0);
     }
 
     @SneakyThrows

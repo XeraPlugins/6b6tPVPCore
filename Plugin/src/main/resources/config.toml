@@ -9,6 +9,7 @@ default_skin_uuid = "ede07de9cc144c08b76cc82dabddb291"
 packet_limit = 400
 user_kit_limit = 9
 
+# Main lobby spawnpoint
 [lobby_spawn]
 world = "world"
 x = 0.5
