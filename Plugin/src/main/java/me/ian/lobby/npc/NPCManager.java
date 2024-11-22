@@ -70,6 +70,14 @@ public class NPCManager implements Listener {
 
                         // Create and add NPC to the list
                         NPC npc = new NPC(location, name, texture, shouldFacePlayers, behavior);
+
+                        // Add the arena name to the new NPC data if the behavior is SEND_TO_ARENA
+                        if (behavior.equals(InteractionBehavior.SEND_TO_ARENA)) {
+                            NBTTagCompound dataCompound = npc.getData();
+                            dataCompound.setString("arena_endpoint", compound.getString("arena_endpoint"));
+                            npc.setData(dataCompound);
+                        }
+
                         this.npcs.add(npc);
                         return npc;
                     } catch (Exception e) {
