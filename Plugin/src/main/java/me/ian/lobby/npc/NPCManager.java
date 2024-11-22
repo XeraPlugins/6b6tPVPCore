@@ -22,6 +22,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
@@ -127,7 +128,7 @@ public class NPCManager implements Listener {
     }
 
 
-    @EventHandler(priority = EventPriority.LOW)
+    @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Bukkit.getScheduler().runTaskLater(PVPHelper.INSTANCE, () -> {
             npcs.forEach(npc -> npc.show(event.getPlayer()));
@@ -147,13 +148,24 @@ public class NPCManager implements Listener {
 
     }
 
-    // Handle interaction behavior
-    @EventHandler(priority = EventPriority.LOW)
+    /**
+     * Handles player interaction with NPCs.
+     * <a href="https://bukkit.org/threads/playerinteractevent-triggering-twice.473064/">Event triggers twice per hand</a>
+     *
+     * @param event PlayerInteractAtEntityEvent triggered when a player interacts with an entity.
+     */
+    @EventHandler
     public void onInteract(PlayerInteractAtEntityEvent event) {
-        if (event.getRightClicked() instanceof Player) {
-            EntityPlayer ep = Utils.getHandle((Player) event.getRightClicked());
-            npcs.stream().filter(npc -> npc.getEntityPlayer().equals(ep)).findAny().ifPresent(npc -> npc.onInteract(event.getPlayer()));
-        }
+        if (!(event.getRightClicked() instanceof Player) || event.getHand() != EquipmentSlot.HAND) return;
+
+        Player clickedPlayer = (Player) event.getRightClicked();
+        Player player = event.getPlayer();
+        EntityPlayer entityPlayer = Utils.getHandle(clickedPlayer);
+
+        npcs.stream()
+                .filter(npc -> npc.getEntityPlayer().equals(entityPlayer))
+                .findFirst()
+                .ifPresent(npc -> npc.onInteract(player));
     }
 
     // Event logic for Item Vendor NPCs
