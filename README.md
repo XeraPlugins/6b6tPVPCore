@@ -26,6 +26,6 @@ This project is actively maintained and developed. Contributions and pull reques
    ```
 2. Build the project using Gradle:
   ```bash
-  ./gradlew build
+  ./gradlew shadowJar
   ```
 The compiled JAR will be in the build/libs directory.
