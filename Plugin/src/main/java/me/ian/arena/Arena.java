@@ -98,7 +98,6 @@ public class Arena {
         );
     }
 
-
     public Location getRandomLocation() {
         Random random = new Random();
 
@@ -106,19 +105,18 @@ public class Arena {
         double centerX = (pointA.getX() + pointB.getX()) / 2;
         double centerZ = (pointA.getZ() + pointB.getZ()) / 2;
 
-        double radius = getRadius();
+        // Get the half-lengths for each axis
+        double halfLengthX = Math.abs(pointA.getX() - pointB.getX()) / 2.0;
+        double halfLengthZ = Math.abs(pointA.getZ() - pointB.getZ()) / 2.0;
 
+        // Generate random coordinates within the arena's bounds
         Location randomLocation;
         do {
-            // Generate random coordinates within the bounding box
-            double randomX = centerX + (random.nextDouble() * 2 - 1) * radius;
-            double randomZ = centerZ + (random.nextDouble() * 2 - 1) * radius;
+            double randomX = centerX + (random.nextDouble() * 2 - 1) * halfLengthX;
+            double randomZ = centerZ + (random.nextDouble() * 2 - 1) * halfLengthZ;
 
-            // Create the random location
             randomLocation = highestSpotAtLoccation(new Location(getWorld(), randomX, -1, randomZ));
-
-            // Check if the random location is within the radius and make sure there aren't any players nearby
-        } while (!isLocationWithinBounds(randomLocation) && !randomLocation.getNearbyPlayers(6).isEmpty());
+        } while (!randomLocation.getNearbyPlayers(6).isEmpty());
 
         return randomLocation;
     }
