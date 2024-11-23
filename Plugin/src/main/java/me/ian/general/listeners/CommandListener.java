@@ -12,7 +12,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.server.TabCompleteEvent;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class CommandListener implements Listener {
@@ -21,7 +20,7 @@ public class CommandListener implements Listener {
     public void onCommand(PlayerCommandPreprocessEvent event) {
         if (event.getPlayer().isOp()) return;
 
-        String command = event.getMessage().substring(1); // Remove the leading slash
+        String command = event.getMessage().substring(1).split(" ")[0];
         CommandManager commandManager = PVPHelper.INSTANCE.getCommandManager();
 
         boolean isAllowedCommand = commandManager.getCommands().stream()
