@@ -1,12 +1,12 @@
 package me.ian.lobby.npc;
 
+import com.google.common.base.Charsets;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import me.ian.PVPHelper;
 import me.ian.utils.NBTUtils;
 import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.Bukkit;
@@ -18,8 +18,10 @@ import org.bukkit.craftbukkit.v1_12_R1.scoreboard.CraftScoreboard;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Function;
 
 /**
  * @author SevJ6
@@ -36,6 +38,18 @@ public class NPC {
     private boolean facePlayers;
     private NBTTagCompound data;
     private InteractionBehavior behavior;
+    private List<Packet> spawnPackets;
+
+    private Function<EntityPlayer, List<Packet<?>>> getSpawnPackets = (entityPlayer) -> {
+        DataWatcher watcher = entityPlayer.getDataWatcher();
+        entityPlayer.getDataWatcher().set(new DataWatcherObject<>(13, DataWatcherRegistry.a), (byte) 0xFF);
+
+        return Arrays.asList(new Packet<?>[]{
+                new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, entityPlayer),
+                new PacketPlayOutEntityMetadata(entityPlayer.getId(), watcher, true),
+                new PacketPlayOutNamedEntitySpawn(entityPlayer)
+        });
+    };
 
     public NPC(Location location, String name, SkinTexture texture, boolean shouldFacePlayers, InteractionBehavior behavior) {
         this.location = location;
@@ -49,14 +63,13 @@ public class NPC {
     public void spawn() {
         MinecraftServer server = MinecraftServer.getServer();
         WorldServer worldServer = ((CraftWorld) location.getWorld()).getHandle();
-        gameProfile = new GameProfile(UUID.randomUUID(), ChatColor.translateAlternateColorCodes('&', name));
+        gameProfile = new GameProfile(UUID.nameUUIDFromBytes(("NPC:" + name).getBytes(Charsets.UTF_8)), ChatColor.translateAlternateColorCodes('&', name));
         gameProfile.getProperties().put("textures", new Property("textures", texture.getTexture(), texture.getSignature()));
         entityPlayer = new EntityPlayer(server, worldServer, gameProfile, new PlayerInteractManager(worldServer));
         entityPlayer.setLocation(location.getX(), location.getY(), location.getZ(), 0.0f, 0.0f);
         entityPlayer.playerConnection = new PlayerConnection(server, new NetworkManager(EnumProtocolDirection.CLIENTBOUND), entityPlayer);
-        entityPlayer.setInvulnerable(true);
         worldServer.addEntity(entityPlayer);
-        Bukkit.getOnlinePlayers().stream().filter(player -> player != entityPlayer.getBukkitEntity()).forEach(this::show);
+        Bukkit.getOnlinePlayers().forEach(this::show);
     }
 
     public void lookAtPlayer(Player player) {
@@ -83,39 +96,24 @@ public class NPC {
         });
     }
 
-    public void remove() {
-        Bukkit.getOnlinePlayers().forEach(this::disappear);
+    public void despawn() {
+        Bukkit.getOnlinePlayers().forEach(player -> {
+            PlayerConnection connection = ((CraftPlayer) player).getHandle().playerConnection;
+            connection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, entityPlayer));
+            PacketPlayOutEntityDestroy destroyPacket = new PacketPlayOutEntityDestroy(entityPlayer.getId());
+            connection.sendPacket(destroyPacket);
+        });
         entityPlayer.die();
-    }
-
-    public void disappear(Player player) {
-        PlayerConnection connection = ((CraftPlayer) player).getHandle().playerConnection;
-        connection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, entityPlayer));
-        PacketPlayOutEntityDestroy destroyPacket = new PacketPlayOutEntityDestroy(entityPlayer.getId());
-        connection.sendPacket(destroyPacket);
     }
 
     public void show(Player player) {
         PlayerConnection connection = ((CraftPlayer) player).getHandle().playerConnection;
-        connection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, entityPlayer));
-        connection.sendPacket(new PacketPlayOutNamedEntitySpawn(entityPlayer));
-        connection.sendPacket(new PacketPlayOutEntityHeadRotation(entityPlayer, (byte) ((location.getYaw() * 256f) / 360f)));
-
-        // https://hypixel.net/threads/npc-player-skin-help.1440574/
-        DataWatcher watcher = entityPlayer.getDataWatcher();
-        entityPlayer.getDataWatcher().set(new DataWatcherObject<>(13, DataWatcherRegistry.a), (byte) 0xFF);
-        connection.sendPacket(new PacketPlayOutEntityMetadata(entityPlayer.getId(), watcher, true));
-
-        // remove from tablist afterwards
-        Bukkit.getScheduler().runTaskLater(PVPHelper.INSTANCE, () -> {
-            connection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, entityPlayer));
-        }, 10L);
+        getSpawnPackets.apply(entityPlayer).forEach(connection::sendPacket);
     }
 
     public void onInteract(Player player) {
         behavior.execute(player, this);
     }
-
 
     private NBTTagCompound getNbtData() {
         NBTTagCompound compound = new NBTTagCompound();

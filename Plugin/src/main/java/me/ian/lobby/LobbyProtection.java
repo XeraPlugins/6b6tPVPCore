@@ -4,8 +4,10 @@ import com.moandjiezana.toml.Toml;
 import me.ian.PVPHelper;
 import me.ian.arena.ArenaManager;
 import me.ian.utils.PlayerUtils;
+import net.minecraft.server.v1_12_R1.PacketPlayOutPlayerInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -54,7 +56,7 @@ public class LobbyProtection implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onFall(EntityDamageEvent event) {
-        if (arenaManager.isLocationInArena(event.getEntity().getLocation())) {
+        if (event.getEntity() instanceof LivingEntity && !arenaManager.isLocationInArena(event.getEntity().getLocation().getBlock().getLocation())) {
             event.setCancelled(true);
             return;
         }

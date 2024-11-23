@@ -4,13 +4,11 @@ import me.ian.PVPHelper;
 import me.ian.utils.ItemUtils;
 import me.ian.utils.NBTUtils;
 import me.ian.utils.Utils;
-import net.minecraft.server.v1_12_R1.EntityPlayer;
-import net.minecraft.server.v1_12_R1.ItemStack;
-import net.minecraft.server.v1_12_R1.NBTTagCompound;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
+import me.txmc.protocolapi.PacketEvent;
+import me.txmc.protocolapi.PacketListener;
+import net.minecraft.server.v1_12_R1.*;
+import org.bukkit.*;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
@@ -29,15 +27,13 @@ import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.lang.reflect.Field;
+import java.util.*;
 
 /**
  * @author SevJ6
  */
-public class NPCManager implements Listener {
+public class NPCManager implements Listener, PacketListener {
 
     private final List<NPC> npcs = new ArrayList<>();
     private final File npcDataFolder;
@@ -93,6 +89,8 @@ public class NPCManager implements Listener {
 
         // Log how many NPCs were loaded
         PVPHelper.INSTANCE.getLogger().info(String.format("Successfully loaded %d NPCs.", npcCount));
+
+        PVPHelper.INSTANCE.getDispatcher().register(this, (Class<? extends Packet<?>>) null);
     }
 
     public void createNPC(NPC npc) {
@@ -121,7 +119,7 @@ public class NPCManager implements Listener {
         NPC npc = getNPC(name);
         if (npc == null) return;
         npcs.remove(npc);
-        npc.remove();
+        npc.despawn();
 
         File file = new File(npcDataFolder, String.format("%s.nbt", name));
         if (file.exists()) {
@@ -135,11 +133,14 @@ public class NPCManager implements Listener {
         }
     }
 
+    public void showNPCs(Player player) {
+        npcs.forEach(npc -> npc.show(player));
+    }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Bukkit.getScheduler().runTaskLater(PVPHelper.INSTANCE, () -> {
-            npcs.forEach(npc -> npc.show(event.getPlayer()));
+            showNPCs(event.getPlayer());
         }, 20L);
     }
 
@@ -242,5 +243,23 @@ public class NPCManager implements Listener {
         Player player = (Player) event.getPlayer();
         if (event.getReason() == InventoryCloseEvent.Reason.PLUGIN) return;
         if (player.hasMetadata("vendor_gui")) player.removeMetadata("vendor_gui", PVPHelper.INSTANCE);
+    }
+
+    @Override
+    public void incoming(PacketEvent.Incoming incoming) throws Throwable {
+
+    }
+
+    @Override
+    public void outgoing(PacketEvent.Outgoing event) throws Throwable {
+            if (event.getPacket() instanceof PacketPlayOutEntityDestroy) {
+                PacketPlayOutEntityDestroy packet = (PacketPlayOutEntityDestroy) event.getPacket();
+                Field idField = PacketPlayOutEntityDestroy.class.getDeclaredField("a");
+                idField.setAccessible(true);
+                int[] ids = (int[]) idField.get(packet);
+                npcs.stream().filter(npc -> Arrays.stream(ids).anyMatch(id -> id == npc.getEntityPlayer().getId())).findFirst().ifPresent(npc -> {
+                    event.setCancelled(true);
+                });
+            }
     }
 }

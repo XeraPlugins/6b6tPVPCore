@@ -108,6 +108,11 @@ public class DuelCommand extends PluginCommand implements CommandExecutor {
                     return true;
                 }
 
+                if (arenaManager.isPlayerInArena(player)) {
+                    Utils.sendMessage(player, "&cYou can not request to duel anyone while inside an arena.");
+                    return true;
+                }
+
                 if (arenaManager.isPlayerInArena(target)) {
                     Utils.sendMessage(player, "&c" + target.getName() + " is currently inside an arena. You can not request to duel them at this time.");
                     return true;

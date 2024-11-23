@@ -1,5 +1,6 @@
 package me.ian.utils;
 
+import com.sk89q.worldedit.blocks.BaseBlock;
 import me.ian.duels.Duel;
 import net.minecraft.server.v1_12_R1.Blocks;
 import net.minecraft.server.v1_12_R1.NBTTagCompound;
@@ -13,11 +14,16 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ItemUtils {
+
+    public static final Set<BaseBlock> BASE_BLOCKS = Arrays.stream(Material.values())
+            .filter(material -> material != Material.BEDROCK)
+            .filter(Material::isBlock)
+            .map(material -> new BaseBlock(material.getId()))
+            .collect(Collectors.toSet());
 
     public static final Map<Integer, ItemStack> ITEM_INDEX = new HashMap<Integer, ItemStack>() {{
         put(1, toItem(Material.END_CRYSTAL));

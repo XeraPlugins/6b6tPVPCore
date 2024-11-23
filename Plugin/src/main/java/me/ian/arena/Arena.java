@@ -6,18 +6,11 @@ import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.blocks.BaseBlock;
 import com.sk89q.worldedit.bukkit.BukkitUtil;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
-import com.sk89q.worldedit.extent.MaskingExtent;
-import com.sk89q.worldedit.extent.inventory.BlockBagExtent;
-import com.sk89q.worldedit.function.mask.BlockMask;
-import com.sk89q.worldedit.function.mask.Mask;
 import com.sk89q.worldedit.function.operation.Operations;
-import com.sk89q.worldedit.function.pattern.BlockPattern;
-import com.sk89q.worldedit.masks.BlockTypeMask;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import me.ian.PVPHelper;
-import me.ian.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -63,9 +56,11 @@ public class Arena {
 
     // Check if a player is within the bounds of the arena
     public boolean isPlayerWithinBounds(Player player) {
-        return isLocationWithinBounds(player.getLocation());
+        Location blockLocation = player.getLocation().getBlock().getLocation();
+        return isLocationWithinBounds(blockLocation);
     }
 
+    // Get all players in the arena
     public List<Player> getPlayers() {
         return Bukkit.getOnlinePlayers().stream()
                 .filter(player -> Objects.equals(world, player.getWorld()))
@@ -73,10 +68,11 @@ public class Arena {
                 .collect(Collectors.toList());
     }
 
+    // Get all non-player entities in an arena
     public List<Entity> getEntities() {
         return getWorld().getEntities().stream()
                 .filter(entity -> !(entity instanceof Player))
-                .filter(entity -> isLocationWithinBounds(entity.getLocation()))
+                .filter(entity -> isLocationWithinBounds(entity.getLocation().getBlock().getLocation()))
                 .collect(Collectors.toList());
     }
 
@@ -97,14 +93,14 @@ public class Arena {
             double randomX = centerX + (random.nextDouble() * 2 - 1) * halfLengthX;
             double randomZ = centerZ + (random.nextDouble() * 2 - 1) * halfLengthZ;
 
-            randomLocation = highestSpotAtLoccation(new Location(getWorld(), randomX, -1, randomZ));
+            randomLocation = getHighestSpot(new Location(getWorld(), randomX, -1, randomZ));
         } while (!randomLocation.getNearbyPlayers(6).isEmpty());
 
         return randomLocation;
     }
 
     // Override bukkit's World.getHighestBlockAt method. Not sure why but it just fucks up sometimes
-    public Location highestSpotAtLoccation(Location location) {
+    public Location getHighestSpot(Location location) {
         Location clone = location.clone();
         for (double y = 255; y > 0; y--) {
             clone.setY(y);
@@ -115,33 +111,20 @@ public class Arena {
 
     @SneakyThrows
     public void clear() {
-        // Define the WorldEdit region
-        CuboidRegion region = new CuboidRegion(
-                BukkitUtil.getLocalWorld(getWorld()),
-                new Vector(pointA.getX(), pointA.getY(), pointA.getZ()),
-                new Vector(pointB.getX(), pointB.getY(), pointB.getZ())
-        );
-
-        // Create an EditSession with a higher block limit for efficiency
-        EditSession session = WorldEdit.getInstance()
-                .getEditSessionFactory()
-                .getEditSession(new BukkitWorld(getWorld()), -1); // Unlimited blocks
-
-        try {
-            session.replaceBlocks(
-                    region,
-                    new HashSet<>(Collections.singletonList(new BaseBlock(Material.BEDROCK.getId()))), // Target only non-bedrock
-                    new BaseBlock(0) // Replace with air
-            );
-
-            // Commit changes
-            Operations.complete(session.commit());
-        } finally {
-            session.flushQueue();
+        CuboidRegion region = new CuboidRegion(BukkitUtil.getLocalWorld(getWorld()), new Vector(pointA.getX(), pointA.getY(), pointA.getZ()), new Vector(pointB.getX(), pointB.getY(), pointB.getZ()));
+        EditSession session = WorldEdit.getInstance().getEditSessionFactory().getEditSession(new BukkitWorld(getWorld()), region.getArea());
+        for (int x = region.getMinimumPoint().getBlockX(); x <= region.getMaximumPoint().getBlockX(); x++) {
+            for (int y = region.getMinimumPoint().getBlockY(); y <= region.getMaximumPoint().getBlockY(); y++) {
+                for (int z = region.getMinimumPoint().getBlockZ(); z <= region.getMaximumPoint().getBlockZ(); z++) {
+                    if (getWorld().getBlockAt(x, y, z).getType() != Material.BEDROCK) {
+                        session.setBlock(new Vector(x, y, z), new BaseBlock(0));
+                    }
+                }
+            }
         }
-
-        // Remove entities within the region
-        getEntities().forEach(Entity::remove);
+        Operations.complete(session.commit());
+        session.flushQueue();
+        getEntities().forEach(Entity::remove); // remove all entities
     }
 
 }

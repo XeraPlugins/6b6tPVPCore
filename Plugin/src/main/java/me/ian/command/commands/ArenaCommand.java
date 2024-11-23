@@ -15,6 +15,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import javax.rmi.CORBA.Util;
 import java.util.Objects;
@@ -72,10 +73,7 @@ public class ArenaCommand extends PluginCommand implements CommandExecutor {
                     break;
 
                 case "listarenas":
-                    StringBuilder sb = new StringBuilder();
-                    sb.append("Arenas (").append(arenaManager.getArenas().size()).append("): ");
-                    arenaManager.getArenas().forEach(arena -> sb.append("&3").append(arena.getName()).append("&r, "));
-                    Utils.sendMessage(player, sb.toString());
+                    player.sendMessage(getArenaList(arenaManager).toString());
                     break;
                 case "arenawand":
                     ItemStack stick = new ItemStack(Items.STICK);
@@ -90,5 +88,22 @@ public class ArenaCommand extends PluginCommand implements CommandExecutor {
             }
         }
         return true;
+    }
+
+    @NotNull
+    private static StringBuilder getArenaList(ArenaManager arenaManager) {
+        StringBuilder arenaList = new StringBuilder("Arenas and their bounding points:\n");
+        for (Arena arena : arenaManager.getArenas()) {
+            Location pointA = arena.getPointA();
+            Location pointB = arena.getPointB();
+
+            arenaList.append(String.format(
+                    "Arena: %s\n  - Point A: (%.2f, %.2f, %.2f) in %s\n  - Point B: (%.2f, %.2f, %.2f) in %s\n",
+                    arena.getName(),
+                    pointA.getX(), pointA.getY(), pointA.getZ(), pointA.getWorld().getName(),
+                    pointB.getX(), pointB.getY(), pointB.getZ(), pointB.getWorld().getName()
+            ));
+        }
+        return arenaList;
     }
 }

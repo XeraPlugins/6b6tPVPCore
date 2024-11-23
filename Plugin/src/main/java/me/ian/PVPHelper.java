@@ -39,6 +39,7 @@ public class PVPHelper extends JavaPlugin {
     public static final ScheduledExecutorService EXECUTOR_SERVICE = Executors.newScheduledThreadPool(4);
     public static PVPHelper INSTANCE;
     private Config config;
+    @Getter
     private PacketEventDispatcher dispatcher;
 
     private List<ViolationManager> violationManagers;

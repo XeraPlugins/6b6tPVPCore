@@ -7,9 +7,7 @@ import me.ian.PVPHelper;
 import me.ian.arena.Arena;
 import me.ian.utils.PlayerUtils;
 import me.ian.utils.Utils;
-import net.minecraft.server.v1_12_R1.PacketPlayOutGameStateChange;
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 
@@ -31,8 +29,8 @@ public class Duel {
         Player challenger = participants.get(0);
         Player opponent = participants.get(1);
         Utils.broadcastMessage(PVPHelper.INSTANCE.getRunningConfig().getToml().getString("duel_start").replace("%challenger%", challenger.getName()).replace("%opponent%", opponent.getName()));
-        challenger.teleport(arena.getWorld().getHighestBlockAt(arena.getPointA()).getLocation().add(0.5, 0.0 ,0.5));
-        opponent.teleport(arena.getWorld().getHighestBlockAt(arena.getPointB()).getLocation().add(0.5, 0.0, 0.5));
+        challenger.teleport(arena.getHighestSpot(arena.getPointA()).add(0.5, 0.0, 0.5));
+        opponent.teleport(arena.getHighestSpot(arena.getPointB()).add(0.5, 0.0, 0.5));
         PlayerUtils.facePlayersTowardsEachOther(challenger, opponent);
 
         new Timer().scheduleAtFixedRate(new TimerTask() {
