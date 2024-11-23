@@ -51,7 +51,7 @@ public class PVPHelper extends JavaPlugin {
     private ArenaManager arenaManager;
 
     @Getter
-    private CommandManager commandRegister;
+    private CommandManager commandManager;
 
     @Getter
     private EventManager eventRegister;
@@ -87,8 +87,8 @@ public class PVPHelper extends JavaPlugin {
         dispatcher = new PacketEventDispatcher(this);
         violationManagers = new ArrayList<>();
         EXECUTOR_SERVICE.scheduleAtFixedRate(() -> violationManagers.forEach(ViolationManager::decrementAll), 0, 1, TimeUnit.SECONDS);
-        commandRegister = new CommandManager();
-        commandRegister.registerCommands();
+        commandManager = new CommandManager();
+        commandManager.registerCommands();
         duelManager = new DuelManager();
         arenaManager = new ArenaManager();
         kitManager = new KitManager();

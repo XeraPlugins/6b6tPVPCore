@@ -2,6 +2,7 @@ package me.ian.general;
 
 import me.ian.PVPHelper;
 import me.ian.general.listeners.BedPlacementListener;
+import me.ian.general.listeners.CommandListener;
 import me.ian.general.listeners.PlayerDeathListener;
 import me.ian.general.listeners.patches.*;
 import me.ian.general.listeners.ItemRevertListener;
@@ -32,6 +33,7 @@ public class EventManager {
         listeners.add(new ItemRevertListener());
         listeners.add(new LobbyProtection());
         listeners.add(new BedPlacementListener());
+        listeners.add(new CommandListener());
         PVPHelper.INSTANCE.getDispatcher().register(new PacketLimit(), (Class<? extends Packet<?>>) null);
     }
 

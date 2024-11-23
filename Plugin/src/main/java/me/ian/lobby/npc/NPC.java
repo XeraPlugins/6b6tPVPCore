@@ -68,7 +68,6 @@ public class NPC {
         entityPlayer = new EntityPlayer(server, worldServer, gameProfile, new PlayerInteractManager(worldServer));
         entityPlayer.setLocation(location.getX(), location.getY(), location.getZ(), 0.0f, 0.0f);
         entityPlayer.playerConnection = new PlayerConnection(server, new NetworkManager(EnumProtocolDirection.CLIENTBOUND), entityPlayer);
-        worldServer.addEntity(entityPlayer);
         Bukkit.getOnlinePlayers().forEach(this::show);
     }
 
@@ -81,19 +80,6 @@ public class NPC {
         PlayerConnection connection = ((CraftPlayer) player).getHandle().playerConnection;
         connection.sendPacket(headRotationPacket);
         connection.sendPacket(lookPacket);
-    }
-
-    public void setNameInvisible() {
-        ScoreboardTeam team = new ScoreboardTeam(((CraftScoreboard) Bukkit.getScoreboardManager().getMainScoreboard()).getHandle(), entityPlayer.getName());
-        team.setNameTagVisibility(ScoreboardTeamBase.EnumNameTagVisibility.NEVER);
-        List<String> playerToAdd = new ArrayList<>();
-        playerToAdd.add(entityPlayer.getName());
-        Bukkit.getOnlinePlayers().forEach(player -> {
-            PlayerConnection connection = ((CraftPlayer) player).getHandle().playerConnection;
-            connection.sendPacket(new PacketPlayOutScoreboardTeam(team, 1));
-            connection.sendPacket(new PacketPlayOutScoreboardTeam(team, 0));
-            connection.sendPacket(new PacketPlayOutScoreboardTeam(team, playerToAdd, 3));
-        });
     }
 
     public void despawn() {

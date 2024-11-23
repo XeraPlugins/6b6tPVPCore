@@ -30,6 +30,8 @@ public class CommandManager {
         commands.add(new ArenaCommand());
         commands.add(new DuelCommand());
         commands.add(new KitCommand());
+        commands.add(new WorldSwitchCommand());
+        commands.add(new HelpCommand());
     }
 
     public void registerCommands() {

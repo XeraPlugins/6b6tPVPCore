@@ -16,6 +16,9 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
@@ -64,5 +67,20 @@ public class LobbyProtection implements Listener {
         if (event.getEntity() instanceof Player && event.getCause() == EntityDamageEvent.DamageCause.FALL) {
             if (((Player) event.getEntity()).getHealth() - event.getDamage() <= 0.0D) event.setDamage(0.0D);
         }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onEmpty(PlayerBucketEmptyEvent event) {
+        event.setCancelled(!arenaManager.isLocationInArena(event.getBlockClicked().getLocation()));
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onFill(PlayerBucketFillEvent event) {
+        event.setCancelled(!arenaManager.isLocationInArena(event.getBlockClicked().getLocation()));
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onShoot(ProjectileLaunchEvent event) {
+        event.setCancelled(!arenaManager.isLocationInArena(event.getEntity().getLocation().getBlock().getLocation()));
     }
 }

@@ -40,3 +40,9 @@ commands:
       - removegkit
       - listukits
       - listgkits
+  world:
+    description: "change the current world you are in"
+    usage: "/world [name]"
+  help:
+    description: "show a list of commands that you can use"
+    usage: "/help"

@@ -3,6 +3,7 @@ package me.ian.utils;
 import com.destroystokyo.paper.Title;
 import com.moandjiezana.toml.Toml;
 import me.ian.PVPHelper;
+import me.ian.command.CommandManager;
 import me.ian.lobby.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -106,5 +107,27 @@ public class PlayerUtils {
             player.kickPlayer(reason);
             PVPHelper.INSTANCE.getLogger().log(Level.INFO, String.format("%s has been kicked for: %s", player.getName(), reason));
         });
+    }
+
+    public static void sendHelpMessage(Player player) {
+        CommandManager commandManager = PVPHelper.INSTANCE.getCommandManager();
+
+        StringBuilder sb = new StringBuilder();
+        commandManager.getCommands()
+                .stream()
+                .filter(pluginCommand -> !pluginCommand.getCommandName().equals("help"))
+                .filter(pluginCommand -> !pluginCommand.isAdminOnly())
+                .map(pluginCommand -> Bukkit.getPluginCommand(pluginCommand.getCommandName()))
+                .forEach(bukkitCommand -> {
+
+                    sb.append(String.format(
+                            "&a%s &r- &3%s\n&7%s\n",
+                            bukkitCommand.getName(),
+                            bukkitCommand.getDescription(),
+                            bukkitCommand.getUsage()
+                    ));
+                });
+
+        Utils.sendMessage(player, sb.toString());
     }
 }

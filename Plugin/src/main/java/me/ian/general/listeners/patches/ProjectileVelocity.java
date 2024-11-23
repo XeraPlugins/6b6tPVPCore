@@ -16,7 +16,9 @@ public class ProjectileVelocity implements Listener {
         if (!(event.getEntity().getShooter() instanceof Player)) return;
         Projectile projectile = event.getEntity();
         double velocity = projectile.getVelocity().lengthSquared();
-        event.setCancelled(velocity > 10D);
-        PVPHelper.INSTANCE.getLogger().log(Level.INFO, String.format("[Projectile Velocity] Stopped %s from shooting an arrow with velocity of %s", ((Player) event.getEntity().getShooter()).getName(), velocity));
+        if (velocity > 10D) {
+            event.setCancelled(true);
+            PVPHelper.INSTANCE.getLogger().log(Level.INFO, String.format("[Projectile Velocity] Stopped %s from shooting an arrow with velocity of %s", ((Player) event.getEntity().getShooter()).getName(), velocity));
+        }
     }
 }
