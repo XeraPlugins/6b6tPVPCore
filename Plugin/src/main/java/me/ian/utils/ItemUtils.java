@@ -19,12 +19,6 @@ import java.util.stream.Collectors;
 
 public class ItemUtils {
 
-    public static final Set<BaseBlock> BASE_BLOCKS = Arrays.stream(Material.values())
-            .filter(material -> material != Material.BEDROCK)
-            .filter(Material::isBlock)
-            .map(material -> new BaseBlock(material.getId()))
-            .collect(Collectors.toSet());
-
     public static final Map<Integer, ItemStack> ITEM_INDEX = new HashMap<Integer, ItemStack>() {{
         put(1, toItem(Material.END_CRYSTAL));
         put(2, toItem(Material.EXP_BOTTLE));

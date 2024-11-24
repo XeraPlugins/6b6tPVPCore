@@ -35,12 +35,37 @@ import java.util.Objects;
  */
 public class PlayerDeathListener implements Listener {
 
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPreDeath(PlayerPreDeathEvent event) {
-        Player player = event.getPlayer().getBukkitEntity();
+    @EventHandler
+    public void onInteract(PlayerInteractEvent event) {
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            Player player = event.getPlayer();
+            net.minecraft.server.v1_12_R1.ItemStack nmsItem = CraftItemStack.asNMSCopy(event.getHand() == EquipmentSlot.OFF_HAND ? player.getInventory().getItemInOffHand() : player.getInventory().getItemInMainHand());
+            if (nmsItem.getTag() != null && nmsItem.getTag().hasKey("EntityTag")) {
+                if (nmsItem.getTag().getCompound("EntityTag").getString("id").equals("minecraft:creeper")) {
+                    Utils.run(() -> {
+                        event.getClickedBlock().getRelative(event.getBlockFace()).getLocation()
+                                .getNearbyEntities(1, 1, 1)
+                                .stream()
+                                .filter(entity -> entity.getType() == EntityType.CREEPER)
+                                .filter(entity -> entity.getTicksLived() < 3)
+                                .forEach(entity -> {
+                                    entity.setMetadata("placer", new FixedMetadataValue(PVPHelper.INSTANCE, player.getName()));
+                                    ((Creeper) entity).setMaxFuseTicks(0);
+                                });
+                    });
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onDeath(PlayerDeathEvent event) {
+        event.setDeathMessage(null);
+        Player player = event.getEntity();
         if (player.getLastDamageCause() instanceof EntityDamageByEntityEvent) {
             Toml config = PVPHelper.INSTANCE.getRunningConfig().getToml();
             EntityDamageByEntityEvent playerDamageEvent = (EntityDamageByEntityEvent) player.getLastDamageCause();
+
             if (playerDamageEvent.getDamager() instanceof EnderCrystal) {
                 EnderCrystal crystal = (EnderCrystal) playerDamageEvent.getDamager();
                 if (crystal.getLastDamageCause() instanceof EntityDamageByEntityEvent) { // check crystal hitter
@@ -68,43 +93,10 @@ public class PlayerDeathListener implements Listener {
                 }
                 return;
             }
-        }
-        Bukkit.broadcast(toComponent(event.getSource(), event.getPlayer().getBukkitEntity()));
-    }
 
-    @EventHandler
-    public void onInteract(PlayerInteractEvent event) {
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            Player player = event.getPlayer();
-            net.minecraft.server.v1_12_R1.ItemStack nmsItem = CraftItemStack.asNMSCopy(event.getHand() == EquipmentSlot.OFF_HAND ? player.getInventory().getItemInOffHand() : player.getInventory().getItemInMainHand());
-            if (nmsItem.getTag() != null && nmsItem.getTag().hasKey("EntityTag")) {
-                if (nmsItem.getTag().getCompound("EntityTag").getString("id").equals("minecraft:creeper")) {
-                    Utils.run(() -> {
-                        event.getClickedBlock().getRelative(event.getBlockFace()).getLocation()
-                                .getNearbyEntities(1, 1, 1)
-                                .stream()
-                                .filter(entity -> entity.getType() == EntityType.CREEPER)
-                                .filter(entity -> entity.getTicksLived() < 3)
-                                .forEach(entity -> {
-                                    entity.setMetadata("placer", new FixedMetadataValue(PVPHelper.INSTANCE, player.getName()));
-                                    ((Creeper) entity).setMaxFuseTicks(0);
-                                });
-                    });
-                }
-            }
-        }
-    }
-
-    @EventHandler
-    public void onDeath(PlayerDeathEvent event) {
-        event.setDeathMessage(null);
-    }
-
-    private BaseComponent toComponent(DamageSource source, Player eliminated) {
-        if (source instanceof EntityDamageSource) {
-            if (source.getEntity() != null && source.getEntity().getBukkitEntity() instanceof Player) {
-                Player killer = (Player) source.getEntity().getBukkitEntity();
-                BaseComponent mainComponent = new TextComponent(Utils.translateChars(String.format("&3%s &4killed &3%s", killer.getName(), eliminated.getName())));
+            if (playerDamageEvent.getDamager() instanceof Player && player.getKiller() != null) {
+                Player killer = player.getKiller();
+                BaseComponent mainComponent = new TextComponent(Utils.translateChars(String.format("&3%s &4killed &3%s", killer.getName(), player.getName())));
                 if (killer.getInventory().getItemInMainHand() != null) {
                     ItemStack weapon = killer.getInventory().getItemInMainHand();
                     mainComponent.addExtra(Utils.translateChars(" &4using"));
@@ -113,10 +105,9 @@ public class PlayerDeathListener implements Listener {
                     mainComponent.addExtra(weaponComponent);
                 }
 
-                return mainComponent;
+                Bukkit.broadcast(mainComponent);
             }
         }
-        return new TextComponent(source.getLocalizedDeathMessage(Utils.getHandle(eliminated)).getText().replace(eliminated.getName(), String.format(Utils.translateChars("&r&3%s&r&4"), eliminated.getName())));
     }
 
     private String convertItemStackToJson(ItemStack itemStack) {
