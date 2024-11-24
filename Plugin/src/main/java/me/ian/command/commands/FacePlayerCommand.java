@@ -15,7 +15,7 @@ import org.bukkit.entity.Player;
 public class FacePlayerCommand extends PluginCommand implements CommandExecutor {
 
     public FacePlayerCommand() {
-        super("faceplayer", true);
+        super("faceplayer", true, false);
     }
 
     @Override

@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 
 public class WorldSwitchCommand extends PluginCommand implements CommandExecutor {
     public WorldSwitchCommand() {
-        super("world", true);
+        super("world", true, false);
     }
 
     @Override

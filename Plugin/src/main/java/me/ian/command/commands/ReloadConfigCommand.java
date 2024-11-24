@@ -13,7 +13,7 @@ import org.bukkit.command.CommandSender;
 public class ReloadConfigCommand extends PluginCommand implements CommandExecutor {
 
     public ReloadConfigCommand() {
-        super("reloadconfig", true);
+        super("reloadconfig", true, false);
     }
 
     @Override

@@ -50,4 +50,11 @@ public class CommandManager {
 
         PVPHelper.INSTANCE.getLogger().log(Level.INFO, String.format("Registered command %s", command.getCommandName()));
     }
+
+    public PluginCommand getCommand(String name) {
+        return commands.stream()
+                .filter(pluginCommand -> pluginCommand.getCommandName().equalsIgnoreCase(name))
+                .findFirst()
+                .orElse(null);
+    }
 }

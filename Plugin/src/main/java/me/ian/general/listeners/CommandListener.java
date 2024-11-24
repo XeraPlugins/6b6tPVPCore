@@ -2,9 +2,9 @@ package me.ian.general.listeners;
 
 import me.ian.PVPHelper;
 import me.ian.command.CommandManager;
-import me.ian.utils.PlayerUtils;
+import me.ian.command.PluginCommand;
+import me.ian.utils.Utils;
 import org.bukkit.Bukkit;
-import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -20,21 +20,30 @@ public class CommandListener implements Listener {
     public void onCommand(PlayerCommandPreprocessEvent event) {
         if (event.getPlayer().isOp()) return;
 
-        String command = event.getMessage().substring(1).split(" ")[0];
+        String commandRan = event.getMessage().substring(1).split(" ")[0];
         CommandManager commandManager = PVPHelper.INSTANCE.getCommandManager();
+        Player player = event.getPlayer();
 
-        boolean isAllowedCommand = commandManager.getCommands().stream()
-                .filter(pluginCommand -> !pluginCommand.isAdminOnly()) // Only non-admin commands
-                .anyMatch(pluginCommand -> {
-                    PluginCommand bukkitCommand = Bukkit.getPluginCommand(pluginCommand.getCommandName());
-                    return bukkitCommand != null &&
-                            (bukkitCommand.getName().equalsIgnoreCase(command) || bukkitCommand.getAliases().contains(command));
-                });
-
-        if (!isAllowedCommand) {
-            event.setCancelled(true);
-            PlayerUtils.sendHelpMessage(event.getPlayer());
+        PluginCommand commandFound = commandManager.getCommand(commandRan);
+        if (commandFound == null) {
+            commandFound = commandManager.getCommands().stream()
+                    .filter(pluginCommand -> !pluginCommand.isAdminOnly())
+                    .filter(cmd -> {
+                        org.bukkit.command.PluginCommand bukkitCommand = Bukkit.getPluginCommand(cmd.getCommandName());
+                        return bukkitCommand != null && (bukkitCommand.getName().equalsIgnoreCase(commandRan) || bukkitCommand.getAliases().contains(commandRan));
+                    }).findAny().orElse(null);
         }
+
+        boolean cancelled = false;
+        if (commandFound == null) {
+            cancelled = true;
+            Utils.sendMessage(player, "&cUnknown command. Type /help for a list of all commands");
+        } else if (!commandFound.isArenaAllowed() && PVPHelper.INSTANCE.getArenaManager().isPlayerInArena(player)) {
+            cancelled = true;
+            Utils.sendMessage(player, "&cUnable to run that command inside an arena. Try again later.");
+        }
+
+        event.setCancelled(cancelled);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

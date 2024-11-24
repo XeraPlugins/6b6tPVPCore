@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  */
 public class NPCCommand extends PluginCommand implements CommandExecutor {
     public NPCCommand() {
-        super("npc", true);
+        super("npc", true, false);
     }
 
     @Override

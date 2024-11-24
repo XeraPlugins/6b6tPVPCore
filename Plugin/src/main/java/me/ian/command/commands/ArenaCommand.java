@@ -8,7 +8,6 @@ import me.ian.utils.Utils;
 import net.minecraft.server.v1_12_R1.ItemStack;
 import net.minecraft.server.v1_12_R1.Items;
 import net.minecraft.server.v1_12_R1.NBTTagCompound;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -17,13 +16,12 @@ import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import javax.rmi.CORBA.Util;
 import java.util.Objects;
 
 public class ArenaCommand extends PluginCommand implements CommandExecutor {
 
     public ArenaCommand() {
-        super("arena", true);
+        super("arena", true, false);
     }
 
     @Override

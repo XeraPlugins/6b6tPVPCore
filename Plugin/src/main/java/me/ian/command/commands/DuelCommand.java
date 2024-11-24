@@ -25,7 +25,7 @@ public class DuelCommand extends PluginCommand implements CommandExecutor {
     private final Map<UUID, UUID> duelRequests = new HashMap<>();
 
     public DuelCommand() {
-        super("duel", false);
+        super("duel", false, false);
     }
 
     @Override
