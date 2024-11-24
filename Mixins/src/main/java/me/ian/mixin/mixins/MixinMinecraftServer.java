@@ -9,6 +9,7 @@ import me.txmc.rtmixin.mixin.Inject;
 import me.txmc.rtmixin.mixin.MethodInfo;
 import net.minecraft.server.v1_12_R1.MinecraftServer;
 import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.v1_12_R1.generator.NormalChunkGenerator;
 
 /**
  * @author SevJ6

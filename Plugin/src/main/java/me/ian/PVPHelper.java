@@ -1,5 +1,6 @@
 package me.ian;
 
+import co.aikar.timings.TimedChunkGenerator;
 import lombok.Getter;
 import me.ian.arena.ArenaManager;
 import me.ian.command.CommandManager;
@@ -7,19 +8,21 @@ import me.ian.duels.DuelManager;
 import me.ian.general.EventManager;
 import me.ian.kits.KitManager;
 import me.ian.lobby.npc.NPCManager;
-import me.ian.lobby.world.VoidWorld;
+import me.ian.lobby.world.VoidGen;
 import me.ian.time.TaskManager;
 import me.ian.time.schedulers.TabListUpdater;
 import me.txmc.protocolapi.PacketEventDispatcher;
 import me.txmc.protocolapi.PacketListener;
 import me.txmc.protocolapi.reflection.ClassProcessor;
-import net.minecraft.server.v1_12_R1.Packet;
+import net.minecraft.server.v1_12_R1.*;
+import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.event.Listener;
-import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -67,12 +70,6 @@ public class PVPHelper extends JavaPlugin {
         return config;
     }
 
-    // custom world generation to generate nothing but air blocks for Multiverse-Core
-    @Override
-    public ChunkGenerator getDefaultWorldGenerator(String worldName, String id) {
-        return new VoidWorld();
-    }
-
     @Override
     public void onEnable() {
         INSTANCE = this;
@@ -96,6 +93,19 @@ public class PVPHelper extends JavaPlugin {
         eventRegister.registerEvents();
         npcManager = new NPCManager();
         TaskManager.register(TabListUpdater.class);
+
+        // Make all worlds generate nothing but void chunks
+        Bukkit.getWorlds().forEach(world -> {
+
+            WorldServer worldServer = ((CraftWorld) world).getHandle();
+            try {
+                Field chunkGenF = World.class.getDeclaredField("chunkProvider");
+                chunkGenF.setAccessible(true);
+                chunkGenF.set(worldServer, new ChunkProviderServer(worldServer, worldServer.getDataManager().createChunkLoader(worldServer.worldProvider), new TimedChunkGenerator(worldServer, new VoidGen(worldServer))));
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
 
     @Override
