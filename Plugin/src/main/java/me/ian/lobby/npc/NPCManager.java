@@ -156,7 +156,7 @@ public class NPCManager implements Listener {
         Player player = event.getPlayer();
 
         for (NPC npc : npcs) {
-            boolean isWithinRange = npc.getDistance(player) <= 30;
+            boolean isWithinRange = npc.getEntityPlayer().getWorld().getWorld() == player.getWorld() && npc.getDistance(player) <= 30;
             boolean isPlayerTracked = npc.getPlayersInRange().contains(player);
 
             if (isWithinRange) {
