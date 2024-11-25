@@ -1,13 +1,11 @@
 package me.ian.general;
 
 import me.ian.PVPHelper;
-import me.ian.general.listeners.BedPlacementListener;
-import me.ian.general.listeners.CommandListener;
-import me.ian.general.listeners.PlayerDeathListener;
+import me.ian.general.listeners.*;
 import me.ian.general.listeners.patches.*;
-import me.ian.general.listeners.ItemRevertListener;
 import me.ian.lobby.LobbyProtection;
 import net.minecraft.server.v1_12_R1.Packet;
+import net.minecraft.server.v1_12_R1.PacketPlayInUseItem;
 import org.bukkit.event.Listener;
 
 import java.util.ArrayList;
@@ -35,6 +33,7 @@ public class EventManager {
         listeners.add(new BedPlacementListener());
         listeners.add(new CommandListener());
         PVPHelper.INSTANCE.getDispatcher().register(new PacketLimit(), (Class<? extends Packet<?>>) null);
+        PVPHelper.INSTANCE.getDispatcher().register(new FastCrystalListener(), PacketPlayInUseItem.class);
     }
 
     public void registerEvents() {

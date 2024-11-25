@@ -37,7 +37,7 @@ public class ItemRevertListener extends ItemUtils implements Listener {
                     }
                 });
             });
-        }, 0L, 2500L, TimeUnit.MILLISECONDS);
+        }, 0L, 3000L, TimeUnit.MILLISECONDS);
     }
 
     @EventHandler

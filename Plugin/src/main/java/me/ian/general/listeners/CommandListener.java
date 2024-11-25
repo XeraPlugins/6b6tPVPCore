@@ -18,11 +18,17 @@ public class CommandListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onCommand(PlayerCommandPreprocessEvent event) {
+        String commandRan = event.getMessage().substring(1).split(" ")[0];
+        Player player = event.getPlayer();
+        if (commandRan.equalsIgnoreCase("kill")) {
+            event.setCancelled(true);
+            player.setHealth(0.0D);
+            return;
+        }
+
         if (event.getPlayer().isOp()) return;
 
-        String commandRan = event.getMessage().substring(1).split(" ")[0];
         CommandManager commandManager = PVPHelper.INSTANCE.getCommandManager();
-        Player player = event.getPlayer();
 
         PluginCommand commandFound = commandManager.getCommand(commandRan);
         if (commandFound == null) {
