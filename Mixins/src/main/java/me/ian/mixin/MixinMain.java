@@ -1,6 +1,7 @@
 package me.ian.mixin;
 
 import me.ian.mixin.mixins.MixinCreeper;
+import me.ian.mixin.mixins.MixinEnderCrystal;
 import me.ian.mixin.mixins.MixinEntityPlayer;
 import me.ian.mixin.mixins.MixinMinecraftServer;
 import me.txmc.rtmixin.RtMixin;
@@ -24,6 +25,7 @@ public class MixinMain {
         RtMixin.processMixins(MixinMinecraftServer.class);
         RtMixin.processMixins(MixinEntityPlayer.class);
         RtMixin.processMixins(MixinCreeper.class);
+        RtMixin.processMixins(MixinEnderCrystal.class);
         plugin.getLogger().info(translate("&3Preformed all mixins in&r&a %dms&r", (System.currentTimeMillis() - start)));
     }
 

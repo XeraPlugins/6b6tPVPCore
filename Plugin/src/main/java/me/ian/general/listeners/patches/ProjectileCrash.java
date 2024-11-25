@@ -27,6 +27,7 @@ public class ProjectileCrash implements Listener {
         switch (entity.getType()) {
             case FIREBALL:
             case SMALL_FIREBALL:
+            case DRAGON_FIREBALL:
                 return 1.10f;
             case WITHER_SKULL:
                 return 1.15f;

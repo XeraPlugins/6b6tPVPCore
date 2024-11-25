@@ -3,10 +3,12 @@ package me.ian.lobby;
 import com.moandjiezana.toml.Toml;
 import me.ian.PVPHelper;
 import me.ian.arena.ArenaManager;
+import me.ian.mixin.event.EndCrystalCreateEvent;
 import me.ian.utils.PlayerUtils;
 import net.minecraft.server.v1_12_R1.PacketPlayOutPlayerInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,6 +18,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
@@ -82,5 +85,29 @@ public class LobbyProtection implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onShoot(ProjectileLaunchEvent event) {
         event.setCancelled(!arenaManager.isLocationInArena(event.getEntity().getLocation().getBlock().getLocation()));
+    }
+
+    @EventHandler
+    public void onSpawn(EntitySpawnEvent event) {
+        Location location = event.getEntity().getLocation().getBlock().getLocation();
+        boolean cancelled = false;
+        switch (event.getEntity().getType()) {
+
+            case CREEPER:
+            case DROPPED_ITEM:
+                cancelled = !arenaManager.isLocationInArena(location);
+                break;
+
+            default:
+                cancelled = true;
+                break;
+        }
+
+        event.setCancelled(cancelled);
+    }
+
+    @EventHandler
+    public void onCrystalSpawn(EndCrystalCreateEvent event) {
+        if (!arenaManager.isLocationInArena(event.getLocation().getBlock().getLocation())) event.getCrystal().remove();
     }
 }

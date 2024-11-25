@@ -68,6 +68,7 @@ public class NPC {
         gameProfile = new GameProfile(UUID.nameUUIDFromBytes(("NPC:" + name).getBytes(Charsets.UTF_8)), ChatColor.translateAlternateColorCodes('&', name));
         gameProfile.getProperties().put("textures", new Property("textures", texture.getTexture(), texture.getSignature()));
         entityPlayer = new EntityPlayer(server, worldServer, gameProfile, new PlayerInteractManager(worldServer));
+        entityPlayer.getBukkitEntity().setRemoveWhenFarAway(false);
         entityPlayer.setLocation(location.getX(), location.getY(), location.getZ(), 0.0f, 0.0f);
         entityPlayer.playerConnection = new PlayerConnection(server, new NetworkManager(EnumProtocolDirection.CLIENTBOUND), entityPlayer);
         worldServer.addEntity(entityPlayer);

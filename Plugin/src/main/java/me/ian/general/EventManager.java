@@ -4,7 +4,10 @@ import me.ian.PVPHelper;
 import me.ian.general.listeners.*;
 import me.ian.general.listeners.patches.*;
 import me.ian.lobby.LobbyProtection;
+import me.ian.lobby.frames.FrameListeners;
+import me.txmc.protocolapi.PacketEventDispatcher;
 import net.minecraft.server.v1_12_R1.Packet;
+import net.minecraft.server.v1_12_R1.PacketPlayInUseEntity;
 import net.minecraft.server.v1_12_R1.PacketPlayInUseItem;
 import org.bukkit.event.Listener;
 
@@ -20,6 +23,7 @@ public class EventManager {
 
     public EventManager() {
         listeners = new ArrayList<>();
+        PacketEventDispatcher dispatcher = PVPHelper.INSTANCE.getDispatcher();
 
         // add listeners
         listeners.add(new PlayerDeathListener());
@@ -32,8 +36,15 @@ public class EventManager {
         listeners.add(new LobbyProtection());
         listeners.add(new BedPlacementListener());
         listeners.add(new CommandListener());
-        PVPHelper.INSTANCE.getDispatcher().register(new PacketLimit(), (Class<? extends Packet<?>>) null);
-        PVPHelper.INSTANCE.getDispatcher().register(new FastCrystalListener(), PacketPlayInUseItem.class);
+        listeners.add(new BlockIgniteListener());
+        listeners.add(new ItemConsumeListener());
+
+        // Create instance of Frame Listeners to register as both a PacketListener and a BukkitListener
+        FrameListeners frameListeners = new FrameListeners();
+        listeners.add(frameListeners);
+        dispatcher.register(frameListeners, PacketPlayInUseEntity.class);
+
+        dispatcher.register(new PacketLimit(), (Class<? extends Packet<?>>) null);
     }
 
     public void registerEvents() {

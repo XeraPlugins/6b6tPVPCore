@@ -20,6 +20,8 @@ public class CommandListener implements Listener {
     public void onCommand(PlayerCommandPreprocessEvent event) {
         String commandRan = event.getMessage().substring(1).split(" ")[0];
         Player player = event.getPlayer();
+        if (commandRan.equalsIgnoreCase("lobby")) return;
+
         if (commandRan.equalsIgnoreCase("kill")) {
             event.setCancelled(true);
             player.setHealth(0.0D);
