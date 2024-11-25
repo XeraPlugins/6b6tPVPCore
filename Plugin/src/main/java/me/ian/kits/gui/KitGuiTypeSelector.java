@@ -34,10 +34,8 @@ public class KitGuiTypeSelector extends KitGui {
             KitGuiGlobal guiGlobal = new KitGuiGlobal(player, kitManager);
             guiGlobal.open();
         } else if (slot == 5) {
-            if (kitManager.getUserKits().containsKey(player.getUniqueId())) {
-                KitGuiUser guiUser = new KitGuiUser(player, kitManager);
-                guiUser.open();
-            }
+            KitGuiUser guiUser = new KitGuiUser(player, kitManager);
+            guiUser.open();
         }
     }
 }

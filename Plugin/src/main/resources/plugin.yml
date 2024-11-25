@@ -46,3 +46,6 @@ commands:
   help:
     description: "show a list of commands that you can use"
     usage: "/help"
+  wipe:
+    description: "Wipe all non-player entities off of the server"
+    usage: "/wipe"

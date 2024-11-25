@@ -5,6 +5,7 @@ import me.ian.PVPHelper;
 import me.ian.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -27,7 +28,7 @@ public abstract class KitGui {
     }
 
     public void open() {
-        if (player.getOpenInventory() != null) player.closeInventory();
+        if (player.getOpenInventory() != null) player.closeInventory(InventoryCloseEvent.Reason.PLUGIN);
         player.openInventory(inventory);
     }
 

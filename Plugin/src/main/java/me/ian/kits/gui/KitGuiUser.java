@@ -22,7 +22,7 @@ public class KitGuiUser extends KitGui {
     public KitGuiUser(Player player, KitManager kitManager) {
         super(player, 18, Utils.getPrefix() + "&2&lUser Kits&r", player);
         this.kitManager = kitManager;
-        if (!kitManager.getUserKits().get(player.getUniqueId()).isEmpty()) {
+        if (kitManager.getUserKits().containsKey(player.getUniqueId()) && !kitManager.getUserKits().get(player.getUniqueId()).isEmpty()) {
             for (int i = 0; i < kitManager.getUserKits().get(player.getUniqueId()).size(); i++) {
                 Kit kit = kitManager.getUserKits().get(player.getUniqueId()).get(i);
                 org.bukkit.inventory.ItemStack current = new org.bukkit.inventory.ItemStack(Material.DIAMOND_SWORD);

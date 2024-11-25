@@ -69,6 +69,6 @@ public class Duel {
                 player.getInventory().clear();
             }
 
-        }, 50L);
+        }, 90L);
     }
 }

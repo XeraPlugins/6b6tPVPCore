@@ -3,6 +3,7 @@ package me.ian.lobby.npc;
 import com.google.common.base.Charsets;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import io.netty.util.internal.ConcurrentSet;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -38,9 +39,9 @@ public class NPC {
     private boolean facePlayers;
     private NBTTagCompound data;
     private InteractionBehavior behavior;
-    private List<Packet> spawnPackets;
+    private ConcurrentSet<Player> playersInRange;
 
-    private Function<EntityPlayer, List<Packet<?>>> getSpawnPackets = (entityPlayer) -> {
+    public Function<EntityPlayer, List<Packet<?>>> getSpawnPackets = (entityPlayer) -> {
         DataWatcher watcher = entityPlayer.getDataWatcher();
         entityPlayer.getDataWatcher().set(new DataWatcherObject<>(13, DataWatcherRegistry.a), (byte) 0xFF);
 
@@ -58,6 +59,7 @@ public class NPC {
         this.facePlayers = shouldFacePlayers;
         this.behavior = behavior;
         this.data = getNbtData();
+        this.playersInRange = new ConcurrentSet<>();
     }
 
     public void spawn() {
@@ -69,7 +71,6 @@ public class NPC {
         entityPlayer.setLocation(location.getX(), location.getY(), location.getZ(), 0.0f, 0.0f);
         entityPlayer.playerConnection = new PlayerConnection(server, new NetworkManager(EnumProtocolDirection.CLIENTBOUND), entityPlayer);
         worldServer.addEntity(entityPlayer);
-        Bukkit.getOnlinePlayers().forEach(this::show);
     }
 
     public void lookAtPlayer(Player player) {
@@ -113,6 +114,14 @@ public class NPC {
         NBTUtils.writeLocationToTag(compound, this.location);
         compound.setString("Behavior", behavior.name());
         return compound;
+    }
+
+    public double getDistance(Player player) {
+        return player.getLocation().distance(getEntityPlayer().getBukkitEntity().getLocation());
+    }
+
+    public void onRangeEnter(Player player) {
+        show(player);
     }
 
     @Data

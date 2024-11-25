@@ -12,6 +12,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import javax.rmi.CORBA.Util;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -87,8 +88,18 @@ public class KitCommand extends PluginCommand implements CommandExecutor {
                 break;
 
             case "creategkit":
+                if (!player.hasPermission("kit.global")) {
+                    Utils.sendMessage(player, "&cYou do not have permission to create global kits.");
+                    break;
+                }
+
                 if (args.length == 0) {
                     Utils.sendMessage(player, "&cMust enter a name for the global kit.");
+                    break;
+                }
+
+                if (kitManager.getGlobalKits().size() >= 36) {
+                    Utils.sendMessage(player, "&cCan not create more than 36 global kits");
                     break;
                 }
 
@@ -131,6 +142,11 @@ public class KitCommand extends PluginCommand implements CommandExecutor {
                 break;
 
             case "removegkit":
+                if (!player.hasPermission("kit.global")) {
+                    Utils.sendMessage(player, "&cYou do not have permission to remove global kits.");
+                    break;
+                }
+
                 if (args.length == 0) {
                     Utils.sendMessage(player, "&cMust enter a name for the global kit to remove.");
                     break;

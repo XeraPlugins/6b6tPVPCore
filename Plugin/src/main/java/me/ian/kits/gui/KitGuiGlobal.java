@@ -22,20 +22,22 @@ public class KitGuiGlobal extends KitGui {
     public KitGuiGlobal(Player player, KitManager kitManager) {
         super(player, 36, Utils.getPrefix() + "&9&lGlobal Kits&r", player);
         this.kitManager = kitManager;
-        for (int i = 0; i < kitManager.getGlobalKits().size(); i++) {
-            Kit kit = kitManager.getGlobalKits().get(i);
-            ItemStack current = new ItemStack(Material.DIAMOND_SWORD);
-            ItemMeta meta = current.getItemMeta();
-            meta.addEnchant(Enchantment.DURABILITY, 1, true);
-            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-            meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&3" + kit.getName()));
-            meta.setLore(Collections.singletonList(ChatColor.translateAlternateColorCodes('&', "&7&oGlobal Kit - Accessible to All Players")));
-            current.setItemMeta(meta);
-            net.minecraft.server.v1_12_R1.ItemStack nmsCopy = CraftItemStack.asNMSCopy(current);
-            NBTTagCompound compound = nmsCopy.getTag();
-            compound.setString("AttachedGlobalKit", kit.getName());
-            nmsCopy.setTag(compound);
-            getInventory().setItem(i, nmsCopy.asBukkitCopy());
+        if (!kitManager.getGlobalKits().isEmpty()) {
+            for (int i = 0; i < kitManager.getGlobalKits().size(); i++) {
+                Kit kit = kitManager.getGlobalKits().get(i);
+                ItemStack current = new ItemStack(Material.DIAMOND_SWORD);
+                ItemMeta meta = current.getItemMeta();
+                meta.addEnchant(Enchantment.DURABILITY, 1, true);
+                meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&3" + kit.getName()));
+                meta.setLore(Collections.singletonList(ChatColor.translateAlternateColorCodes('&', "&7&oGlobal Kit - Accessible to All Players")));
+                current.setItemMeta(meta);
+                net.minecraft.server.v1_12_R1.ItemStack nmsCopy = CraftItemStack.asNMSCopy(current);
+                NBTTagCompound compound = nmsCopy.getTag();
+                compound.setString("AttachedGlobalKit", kit.getName());
+                nmsCopy.setTag(compound);
+                getInventory().setItem(i, nmsCopy.asBukkitCopy());
+            }
         }
         ItemStack goBackButton = new ItemStack(Material.STONE_BUTTON);
         ItemMeta meta = goBackButton.getItemMeta();
