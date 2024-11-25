@@ -33,6 +33,7 @@ public class CommandManager {
         commands.add(new WorldSwitchCommand());
         commands.add(new HelpCommand());
         commands.add(new WipeEntitiesCommand());
+        commands.add(new RenameCommand());
     }
 
     public void registerCommands() {

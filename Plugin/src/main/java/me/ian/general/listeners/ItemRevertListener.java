@@ -79,11 +79,9 @@ public class ItemRevertListener extends ItemUtils implements Listener {
     public void onSwap(PlayerSwapHandItemsEvent event) {
         if (isIllegal(event.getMainHandItem())) {
             revertItemStack(event.getMainHandItem());
-            System.out.println("reverted, swap item event");
         }
         else if (isIllegal(event.getOffHandItem())) {
             revertItemStack(event.getOffHandItem());
-            System.out.println("reverted, swap item event");
         }
     }
 

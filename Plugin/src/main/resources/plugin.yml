@@ -47,5 +47,8 @@ commands:
     description: "show a list of commands that you can use"
     usage: "/help"
   wipe:
-    description: "Wipe all non-player entities off of the server"
+    description: "wipe all non-player entities off of the server"
     usage: "/wipe"
+  rename:
+    description: "set a custom display name for the item in your main hand"
+    usage: "/rename [name]"
