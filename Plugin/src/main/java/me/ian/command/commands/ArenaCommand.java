@@ -4,8 +4,9 @@ import me.ian.PVPHelper;
 import me.ian.arena.Arena;
 import me.ian.arena.ArenaManager;
 import me.ian.command.PluginCommand;
-import me.ian.utils.BoundingBox;
+import me.ian.utils.area.BoundingBox;
 import me.ian.utils.Utils;
+import me.ian.utils.area.BoundingBoxManager;
 import net.minecraft.server.v1_12_R1.ItemStack;
 import net.minecraft.server.v1_12_R1.Items;
 import net.minecraft.server.v1_12_R1.NBTTagCompound;
@@ -31,27 +32,28 @@ public class ArenaCommand extends PluginCommand implements CommandExecutor {
             Player player = (Player) sender;
 
             ArenaManager arenaManager = PVPHelper.INSTANCE.getArenaManager();
+            BoundingBoxManager boundingBoxManager = PVPHelper.INSTANCE.getBoundingBoxManager();
 
             switch (label) {
                 case "arena":
                     Utils.sendMessage(player, String.format("&c%s", command.getUsage()));
                     break;
                 case "createarena":
-                    Location pos1 = arenaManager.getCreationPos1();
-                    Location pos2 = arenaManager.getCreationPos2();
-                    if (pos1 == null || pos2 == null) {
+                    Location pointA = boundingBoxManager.getGlobalPointA();
+                    Location pointB = boundingBoxManager.getGlobalPointB();
+                    if (pointA == null || pointB == null) {
                         Utils.sendMessage(player, "&cMake sure you make a selection first");
                         return true;
                     }
 
-                    if (!Objects.equals(pos1.getWorld(), pos2.getWorld())) {
+                    if (!Objects.equals(pointA.getWorld(), pointB.getWorld())) {
                         Utils.sendMessage(player, "&cLocations must be in the same world");
                         return true;
                     }
 
                     if (args.length > 0) {
-                        Arena arena = new Arena(args[0], new BoundingBox(player.getWorld(), pos1, pos2), args.length > 1 && args[1].equals("duel"));
-                        PVPHelper.INSTANCE.getArenaManager().createArena(arena);
+                        Arena arena = new Arena(args[0], new BoundingBox(player.getWorld(), pointA, pointB), args.length > 1 && args[1].equals("duel"));
+                        PVPHelper.INSTANCE.getArenaManager().create(arena);
                         Utils.sendMessage(player, String.format("&bCreated arena &a%s", arena.getName()));
                     } else Utils.sendMessage(player, "&cEnter a name please.");
                     break;
@@ -65,7 +67,7 @@ public class ArenaCommand extends PluginCommand implements CommandExecutor {
                     if (args.length > 0) {
                         Arena arena = arenaManager.getArena(args[0]);
                         if (arena != null) {
-                            arenaManager.deleteArena(arena);
+                            arenaManager.delete(arena);
                             Utils.sendMessage(player, String.format("&bDeleted arena &a%s", args[0]));
                         } else Utils.sendMessage(player, String.format("&cArena %s does not exist", args[0]));
                     } else Utils.sendMessage(player, "&cEnter a name please.");

@@ -1,4 +1,4 @@
-package me.ian.utils;
+package me.ian.utils.area;
 
 import lombok.Getter;
 import net.minecraft.server.v1_12_R1.NBTTagCompound;

@@ -11,6 +11,7 @@ import me.ian.lobby.npc.NPCManager;
 import me.ian.lobby.world.VoidGen;
 import me.ian.time.TaskManager;
 import me.ian.time.schedulers.TabListUpdater;
+import me.ian.utils.area.BoundingBoxManager;
 import me.txmc.protocolapi.PacketEventDispatcher;
 import me.txmc.protocolapi.PacketListener;
 import me.txmc.protocolapi.reflection.ClassProcessor;
@@ -65,6 +66,9 @@ public class PVPHelper extends JavaPlugin {
     @Getter
     private KitManager kitManager;
 
+    @Getter
+    private BoundingBoxManager boundingBoxManager;
+
     // Return the custom Toml configuration
     public Config getRunningConfig() {
         return config;
@@ -88,6 +92,7 @@ public class PVPHelper extends JavaPlugin {
         commandManager.registerCommands();
         duelManager = new DuelManager();
         arenaManager = new ArenaManager();
+        boundingBoxManager = new BoundingBoxManager();
         kitManager = new KitManager();
         eventRegister = new EventManager();
         eventRegister.registerEvents();

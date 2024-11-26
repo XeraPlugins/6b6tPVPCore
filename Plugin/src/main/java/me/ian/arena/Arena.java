@@ -11,8 +11,7 @@ import com.sk89q.worldedit.regions.CuboidRegion;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import me.ian.PVPHelper;
-import me.ian.utils.BoundingBox;
-import org.bukkit.Bukkit;
+import me.ian.utils.area.BoundingBox;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -20,7 +19,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Getter
 public class Arena {
