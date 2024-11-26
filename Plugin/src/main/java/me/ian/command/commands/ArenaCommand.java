@@ -4,6 +4,7 @@ import me.ian.PVPHelper;
 import me.ian.arena.Arena;
 import me.ian.arena.ArenaManager;
 import me.ian.command.PluginCommand;
+import me.ian.utils.BoundingBox;
 import me.ian.utils.Utils;
 import net.minecraft.server.v1_12_R1.ItemStack;
 import net.minecraft.server.v1_12_R1.Items;
@@ -49,7 +50,7 @@ public class ArenaCommand extends PluginCommand implements CommandExecutor {
                     }
 
                     if (args.length > 0) {
-                        Arena arena = new Arena(args[0], player.getWorld(), pos1, pos2, args.length > 1 && args[1].equals("duel"));
+                        Arena arena = new Arena(args[0], new BoundingBox(player.getWorld(), pos1, pos2), args.length > 1 && args[1].equals("duel"));
                         PVPHelper.INSTANCE.getArenaManager().createArena(arena);
                         Utils.sendMessage(player, String.format("&bCreated arena &a%s", arena.getName()));
                     } else Utils.sendMessage(player, "&cEnter a name please.");
@@ -92,8 +93,8 @@ public class ArenaCommand extends PluginCommand implements CommandExecutor {
     private static StringBuilder getArenaList(ArenaManager arenaManager) {
         StringBuilder arenaList = new StringBuilder("Arenas and their bounding points:\n");
         for (Arena arena : arenaManager.getArenas()) {
-            Location pointA = arena.getPointA();
-            Location pointB = arena.getPointB();
+            Location pointA = arena.getBoundingBox().getPointA();
+            Location pointB = arena.getBoundingBox().getPointB();
 
             arenaList.append(String.format(
                     "Arena: %s\n  - Point A: (%.2f, %.2f, %.2f) in %s\n  - Point B: (%.2f, %.2f, %.2f) in %s\n",

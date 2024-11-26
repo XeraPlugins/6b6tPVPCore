@@ -2,6 +2,7 @@ package me.ian.arena;
 
 import lombok.Getter;
 import me.ian.PVPHelper;
+import me.ian.utils.BoundingBox;
 import me.ian.utils.NBTUtils;
 import me.ian.utils.Utils;
 import net.minecraft.server.v1_12_R1.ItemStack;
@@ -49,8 +50,7 @@ public class ArenaManager implements Listener {
         try {
             File file = new File(arenaDataFolder, String.format("%s.nbt", arena.getName()));
             if (!file.exists()) file.createNewFile();
-            NBTTagCompound compound = toCompound(arena);
-            NBTUtils.writeTagToFile(compound, file);
+            NBTUtils.writeTagToFile(toCompound(arena), file);
         } catch (Throwable t) {
             t.printStackTrace();
         }
@@ -67,29 +67,19 @@ public class ArenaManager implements Listener {
 
     @NotNull
     private NBTTagCompound toCompound(Arena arena) {
-        Location pointA = arena.getPointA();
-        Location pointB = arena.getPointB();
         NBTTagCompound compound = new NBTTagCompound();
+        arena.getBoundingBox().write(compound);
         compound.setString("name", arena.getName());
-        compound.setString("world", arena.getWorld().getName());
-        compound.setDouble("x1", pointA.getX());
-        compound.setDouble("y1", pointA.getY());
-        compound.setDouble("z1", pointA.getZ());
-        compound.setDouble("x2", pointB.getX());
-        compound.setDouble("y2", pointB.getY());
-        compound.setDouble("z2", pointB.getZ());
         compound.setBoolean("isDuelArena", arena.isDuelArena());
         return compound;
     }
 
     @NotNull
     private Arena fromCompound(NBTTagCompound compound) {
-        World world = Bukkit.getWorld(compound.getString("world"));
         String name = compound.getString("name");
-        Location pointA = new Location(world, compound.getDouble("x1"), compound.getDouble("y1"), compound.getDouble("z1"));
-        Location pointB = new Location(world, compound.getDouble("x2"), compound.getDouble("y2"), compound.getDouble("z2"));
+        BoundingBox boundingBox = BoundingBox.read(compound);
         boolean isDuelArena = compound.getBoolean("isDuelArena");
-        return new Arena(name, world, pointA, pointB, isDuelArena);
+        return new Arena(name, boundingBox, isDuelArena);
     }
 
     public Arena getArena(String name) {
@@ -107,7 +97,6 @@ public class ArenaManager implements Listener {
     public boolean isLocationInArena(Location location) {
         return isWithinBounds(arena -> arena.isLocationWithinBounds(location));
     }
-
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {

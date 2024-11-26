@@ -29,8 +29,8 @@ public class Duel {
         Player challenger = participants.get(0);
         Player opponent = participants.get(1);
         Utils.broadcastMessage(PVPHelper.INSTANCE.getRunningConfig().getToml().getString("duel_start").replace("%challenger%", challenger.getName()).replace("%opponent%", opponent.getName()));
-        challenger.teleport(arena.getHighestSpot(arena.getPointA()).add(0.5, 0.0, 0.5));
-        opponent.teleport(arena.getHighestSpot(arena.getPointB()).add(0.5, 0.0, 0.5));
+        challenger.teleport(arena.getHighestSpot(arena.getBoundingBox().getPointA()).add(0.5, 0.0, 0.5));
+        opponent.teleport(arena.getHighestSpot(arena.getBoundingBox().getPointB()).add(0.5, 0.0, 0.5));
         PlayerUtils.facePlayersTowardsEachOther(challenger, opponent);
 
         new Timer().scheduleAtFixedRate(new TimerTask() {
