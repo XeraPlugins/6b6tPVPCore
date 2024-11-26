@@ -5,9 +5,11 @@ import me.ian.PVPHelper;
 import me.ian.arena.ArenaManager;
 import me.ian.mixin.event.EndCrystalCreateEvent;
 import me.ian.utils.PlayerUtils;
+import me.ian.utils.Utils;
 import net.minecraft.server.v1_12_R1.PacketPlayOutPlayerInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -59,6 +61,8 @@ public class LobbyProtection implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onFall(EntityDamageEvent event) {
+        if (event.getCause() == EntityDamageEvent.DamageCause.VOID) return;
+
         if (event.getEntity() instanceof LivingEntity && !arenaManager.isLocationInArena(event.getEntity().getLocation().getBlock().getLocation())) {
             event.setCancelled(true);
             return;

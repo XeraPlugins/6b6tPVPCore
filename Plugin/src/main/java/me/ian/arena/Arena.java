@@ -85,7 +85,7 @@ public class Arena {
     // Override bukkit's World.getHighestBlockAt method. Not sure why but it just fucks up sometimes
     public Location getHighestSpot(Location location) {
         Location clone = location.clone();
-        for (double y = 255; y > 0; y--) {
+        for (double y = Math.max(boundingBox.getPointA().getY(), boundingBox.getPointB().getY()) - 1; y > 0; y--) {
             clone.setY(y);
             if (!clone.getBlock().isEmpty()) break;
         }
