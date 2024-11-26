@@ -20,10 +20,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
-import org.bukkit.event.player.PlayerBucketEmptyEvent;
-import org.bukkit.event.player.PlayerBucketFillEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.*;
 
 public class LobbyProtection implements Listener {
 
@@ -109,5 +106,12 @@ public class LobbyProtection implements Listener {
     @EventHandler
     public void onCrystalSpawn(EndCrystalCreateEvent event) {
         if (!arenaManager.isLocationInArena(event.getLocation().getBlock().getLocation())) event.getCrystal().remove();
+    }
+
+    @EventHandler
+    public void onInteract(PlayerInteractEvent event) {
+        if (event.getPlayer().isOp()) return;
+        if (event.getClickedBlock() == null) return;
+        event.setCancelled(!arenaManager.isLocationInArena(event.getClickedBlock().getLocation()));
     }
 }
