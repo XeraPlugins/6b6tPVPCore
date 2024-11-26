@@ -20,10 +20,10 @@ commands:
     usage: "/npc <create|remove> <name> [behavior] [skin_uuid] [arena_name]"
   duel:
     description: "1v1 another player"
-    usage: "/duel [player]"
+    usage: "/duel [player] OR /duel <accept|decline>"
   arena:
     description: "create a new arena within two points"
-    usage: "/createarena [name] [duel] OR /cleararenas OR /removearena [name] OR /listarenas"
+    usage: "/createarena [name] <duel> OR /cleararenas OR /removearena [name] OR /listarenas"
     aliases:
       - createarena
       - cleararenas
@@ -52,3 +52,9 @@ commands:
   rename:
     description: "set a custom display name for the item in your main hand"
     usage: "/rename [name]"
+  portal:
+    description: "create custom portals to teleport players around the server"
+    usage: "/portal <create|remove> [name]"
+  tools:
+    description: "give yourself PVPHelper-specific items"
+    usage : "/tools"

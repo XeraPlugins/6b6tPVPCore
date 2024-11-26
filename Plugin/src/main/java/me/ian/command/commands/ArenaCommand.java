@@ -76,16 +76,6 @@ public class ArenaCommand extends PluginCommand implements CommandExecutor {
                 case "listarenas":
                     player.sendMessage(getArenaList(arenaManager).toString());
                     break;
-                case "arenawand":
-                    ItemStack stick = new ItemStack(Items.STICK);
-                    NBTTagCompound compound = new NBTTagCompound();
-                    compound.setBoolean("arenaCreator", true);
-                    NBTTagCompound display = new NBTTagCompound();
-                    display.setString("Name", Utils.translateChars("&e&lArena Wand"));
-                    compound.set("display", display);
-                    stick.setTag(compound);
-                    player.getInventory().addItem(CraftItemStack.asBukkitCopy(stick));
-                    break;
             }
         }
         return true;

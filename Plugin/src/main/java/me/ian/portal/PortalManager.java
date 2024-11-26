@@ -85,7 +85,7 @@ public class PortalManager implements Listener, IManagerData<Portal> {
         exitLocationTag.setFloat("yaw", exitLocation.getYaw());
         exitLocationTag.setFloat("pitch", exitLocation.getPitch());
         compound.set("ExitLocation", exitLocationTag);
-        return null;
+        return compound;
     }
 
     @Override

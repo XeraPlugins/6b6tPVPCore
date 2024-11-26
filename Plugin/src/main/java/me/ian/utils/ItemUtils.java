@@ -3,6 +3,7 @@ package me.ian.utils;
 import com.sk89q.worldedit.blocks.BaseBlock;
 import me.ian.duels.Duel;
 import net.minecraft.server.v1_12_R1.Blocks;
+import net.minecraft.server.v1_12_R1.Items;
 import net.minecraft.server.v1_12_R1.NBTTagCompound;
 import net.minecraft.server.v1_12_R1.NBTTagList;
 import org.bukkit.Material;
@@ -151,5 +152,16 @@ public class ItemUtils {
         compound.set("display", display);
         item.setTag(compound);
         return CraftItemStack.asBukkitCopy(item);
+    }
+
+    public static ItemStack genSetter(String tagName) {
+        net.minecraft.server.v1_12_R1.ItemStack stick = new net.minecraft.server.v1_12_R1.ItemStack(Items.STICK);
+        NBTTagCompound compound = new NBTTagCompound();
+        compound.setBoolean(tagName, true);
+        NBTTagCompound display = new NBTTagCompound();
+        display.setString("Name", Utils.translateChars("&e&l" + tagName));
+        compound.set("display", display);
+        stick.setTag(compound);
+        return CraftItemStack.asBukkitCopy(stick);
     }
 }

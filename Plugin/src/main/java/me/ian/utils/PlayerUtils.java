@@ -116,12 +116,12 @@ public class PlayerUtils {
         commandManager.getCommands()
                 .stream()
                 .filter(pluginCommand -> !pluginCommand.getCommandName().equals("help"))
-                .filter(pluginCommand -> !pluginCommand.isAdminOnly())
+                .filter(pluginCommand -> player.isOp() || !pluginCommand.isAdminOnly())
                 .map(pluginCommand -> Bukkit.getPluginCommand(pluginCommand.getCommandName()))
                 .forEach(bukkitCommand -> {
 
                     sb.append(String.format(
-                            "&a%s &r- &3%s\n&7%s\n",
+                            "&a%s &r- &3%s\n&7Usage: %s\n",
                             bukkitCommand.getName(),
                             bukkitCommand.getDescription(),
                             bukkitCommand.getUsage()
