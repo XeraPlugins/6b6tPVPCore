@@ -5,6 +5,7 @@ import me.ian.PVPHelper;
 import me.ian.arena.Arena;
 import me.ian.mixin.event.PlayerPreDeathEvent;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -38,7 +39,19 @@ public class DuelManager implements Listener {
 
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
-        event.setCancelled(duels.stream().anyMatch(duel -> duel.getParticipants().contains(event.getPlayer()) && !duel.isActive() && !duel.isWinnerDeclared()));
+        Player player = event.getPlayer();
+        event.setCancelled(duels.stream().anyMatch(duel -> duel.getParticipants().contains(player) && !duel.isActive() && !duel.isWinnerDeclared()));
+
+        if (!event.isCancelled()) {
+            duels.stream().filter(duel -> duel.getSpectators().contains(player)).findAny().ifPresent(duel -> {
+                if (!duel.getArena().isPlayerWithinBounds(player)) {
+                    Location center = duel.getArena().getCenter();
+                    center.setYaw(player.getLocation().getYaw());
+                    center.setPitch(player.getLocation().getPitch());
+                    player.teleport(center);
+                }
+            });
+        }
     }
 
     @EventHandler

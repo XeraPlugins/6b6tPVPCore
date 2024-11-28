@@ -5,12 +5,14 @@ import me.ian.arena.Arena;
 import me.ian.arena.ArenaManager;
 import me.ian.command.PluginCommand;
 import me.ian.duels.Duel;
+import me.ian.utils.PlayerUtils;
 import me.ian.utils.Utils;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -78,6 +80,17 @@ public class DuelCommand extends PluginCommand implements CommandExecutor {
                 Utils.sendMessage(player, "&bYou accepted the duel request from &a" + challenger.getName() + "&b!");
                 Utils.sendMessage(challenger, "&bYour duel request was accepted by &a" + player.getName() + "&b!");
                 duelRequests.remove(player.getUniqueId());
+
+                TextComponent spectate = new TextComponent(Utils.translateChars("&9&l[SPECTATE]"));
+                spectate.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new BaseComponent[]{new TextComponent(Utils.translateChars("&aClick to SPECTATE the duel"))}));
+                spectate.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/duel spectate " + duel.getIdentifier().toString()));
+
+                Bukkit.getOnlinePlayers().stream()
+                        .filter(p -> !duel.getParticipants().contains(p))
+                        .forEach(p -> {
+                            Utils.sendMessage(p, PVPHelper.INSTANCE.getRunningConfig().getToml().getString("duel_start").replace("%challenger%", duel.getParticipants().get(0).getName()).replace("%opponent%", duel.getParticipants().get(1).getName()));
+                            p.sendMessage(spectate);
+                        });
                 return true;
             }
             case "decline": {
@@ -96,6 +109,24 @@ public class DuelCommand extends PluginCommand implements CommandExecutor {
                 duelRequests.remove(player.getUniqueId());
                 return true;
             }
+            case "spectate":
+                if (args.length < 2) {
+                    Utils.sendMessage(player, "&cMust enter a duel uuid");
+                    return true;
+                }
+
+                Duel duel = PVPHelper.INSTANCE.getDuelManager().getDuels().stream().filter(d -> d.getIdentifier().equals(UUID.fromString(args[1]))).findFirst().orElse(null);
+                if (duel == null) {
+                    Utils.sendMessage(player, "&cCan not spectate that duel at this time. It has either ended, or it does not exist.");
+                    return true;
+                }
+
+                duel.getSpectators().add(player);
+                player.setGameMode(GameMode.SPECTATOR);
+                player.teleport(duel.getArena().getCenter());
+                PlayerUtils.facePlayersTowardsEachOther(player, duel.getParticipants().get(0));
+
+                return true;
             default: {
                 Player target = Bukkit.getPlayer(args[0]);
                 if (target == null || !target.isOnline()) {

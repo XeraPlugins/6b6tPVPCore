@@ -11,4 +11,5 @@ public interface IManagerData<T> {
     NBTTagCompound toCompound(T t);
 
     T fromCompound(NBTTagCompound compound);
+
 }

@@ -82,6 +82,22 @@ public class Arena {
         return randomLocation;
     }
 
+    /**
+     * Calculates the exact center of the arena's bounding box.
+     *
+     * @return The center location of the bounding box.
+     */
+    public Location getCenter() {
+        Location pointA = boundingBox.getPointA();
+        Location pointB = boundingBox.getPointB();
+
+        double centerX = (pointA.getX() + pointB.getX()) / 2.0;
+        double centerY = (pointA.getY() + pointB.getY()) / 2.0;
+        double centerZ = (pointA.getZ() + pointB.getZ()) / 2.0;
+
+        return new Location(world, centerX, centerY, centerZ);
+    }
+
     // Override bukkit's World.getHighestBlockAt method. Not sure why but it just fucks up sometimes
     public Location getHighestSpot(Location location) {
         Location clone = location.clone();

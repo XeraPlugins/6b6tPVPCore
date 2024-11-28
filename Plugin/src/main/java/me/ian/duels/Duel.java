@@ -8,12 +8,11 @@ import me.ian.arena.Arena;
 import me.ian.utils.PlayerUtils;
 import me.ian.utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 @Getter
 @Setter
@@ -22,13 +21,14 @@ public class Duel {
 
     private final Arena arena;
     private final List<Player> participants;
+    private final List<Player> spectators = new ArrayList<>();
     private boolean active = false;
     private boolean winnerDeclared = false;
+    private final UUID identifier = UUID.randomUUID();
 
     public void start() {
         Player challenger = participants.get(0);
         Player opponent = participants.get(1);
-        Utils.broadcastMessage(PVPHelper.INSTANCE.getRunningConfig().getToml().getString("duel_start").replace("%challenger%", challenger.getName()).replace("%opponent%", opponent.getName()));
         challenger.teleport(arena.getHighestSpot(arena.getBoundingBox().getPointA()).add(0.5, 0.0, 0.5));
         opponent.teleport(arena.getHighestSpot(arena.getBoundingBox().getPointB()).add(0.5, 0.0, 0.5));
         PlayerUtils.facePlayersTowardsEachOther(challenger, opponent);
@@ -58,17 +58,41 @@ public class Duel {
 
     public void declareWinner(Player player) {
         if (!participants.contains(player)) return;
+
         setWinnerDeclared(true);
-        Utils.broadcastMessage(PVPHelper.INSTANCE.getRunningConfig().getToml().getString("duel_win").replace("%winner%", player.getName()).replace("%health%", String.format("%.2f", player.getHealth())).replace("%max_health%", String.format("%.2f", player.getMaxHealth())));
+        Utils.broadcastMessage(
+                PVPHelper.INSTANCE.getRunningConfig().getToml().getString("duel_win")
+                        .replace("%winner%", player.getName())
+                        .replace("%health%", String.format("%.2f", player.getHealth()))
+                        .replace("%max_health%", String.format("%.2f", player.getMaxHealth()))
+        );
+
         player.getWorld().spawn(player.getLocation(), Firework.class);
+
         Bukkit.getScheduler().runTaskLater(PVPHelper.INSTANCE, () -> {
             arena.clear();
+
             if (player.isOnline()) {
-                PlayerUtils.teleportToSpawn(player);
-                player.setHealth(player.getMaxHealth());
-                player.getInventory().clear();
+                resetWinnerState(player);
             }
 
+            spectators.stream()
+                    .filter(Player::isOnline)
+                    .forEach(this::resetSpectatorState);
+
+            spectators.clear();
         }, 90L);
     }
+
+    private void resetWinnerState(Player player) {
+        PlayerUtils.teleportToSpawn(player);
+        player.setHealth(player.getMaxHealth());
+        player.getInventory().clear();
+    }
+
+    private void resetSpectatorState(Player spectator) {
+        PlayerUtils.teleportToSpawn(spectator);
+        spectator.setGameMode(GameMode.SURVIVAL);
+    }
+
 }
