@@ -20,7 +20,7 @@ commands:
     usage: "/npc <create|remove> <name> [behavior] [skin_uuid] [arena_name]"
   duel:
     description: "1v1 another player"
-    usage: "/duel [player] OR /duel <accept|decline>"
+    usage: "/duel [player] OR /duel <accept|decline|spectate> [uuid]"
   arena:
     description: "create a new arena within two points"
     usage: "/createarena [name] <duel> OR /cleararenas OR /removearena [name] OR /listarenas"

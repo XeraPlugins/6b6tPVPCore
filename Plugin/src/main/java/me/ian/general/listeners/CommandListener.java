@@ -24,6 +24,7 @@ public class CommandListener implements Listener {
 
         if (commandRan.equalsIgnoreCase("kill")) {
             event.setCancelled(true);
+            player.setLastDamageCause(null);
             player.setHealth(0.0D);
             Utils.broadcastMessage(String.format("&3%s &4killed themselves.", player.getName()));
             return;
