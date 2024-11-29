@@ -10,14 +10,18 @@ import me.ian.utils.Utils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
 import javax.rmi.CORBA.Util;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public class KitCommand extends PluginCommand implements CommandExecutor {
+public class KitCommand extends PluginCommand implements TabExecutor {
     public KitCommand() {
         super("kit", false, false);
     }
@@ -194,5 +198,20 @@ public class KitCommand extends PluginCommand implements CommandExecutor {
                 break;
         }
         return true;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+        if (!(sender instanceof Player)) return null;
+
+        Player player = (Player) sender;
+        KitManager kitManager = PVPHelper.INSTANCE.getKitManager();
+
+        return Stream.concat(
+                        kitManager.getGlobalKits().stream(),
+                        kitManager.getUserKits().getOrDefault(player.getUniqueId(), Collections.emptyList()).stream()
+                )
+                .map(Kit::getName)
+                .collect(Collectors.toList());
     }
 }

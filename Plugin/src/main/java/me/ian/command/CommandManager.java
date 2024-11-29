@@ -36,6 +36,7 @@ public class CommandManager {
         commands.add(new RenameCommand());
         commands.add(new PortalCommand());
         commands.add(new PluginToolsCommand());
+        commands.add(new SpawnCommand());
     }
 
     public void registerCommands() {

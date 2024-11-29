@@ -58,3 +58,6 @@ commands:
   tools:
     description: "give yourself PVPHelper-specific items"
     usage : "/tools"
+  spawn:
+    description: "teleport to the main lobby"
+    usage: "/spawn"

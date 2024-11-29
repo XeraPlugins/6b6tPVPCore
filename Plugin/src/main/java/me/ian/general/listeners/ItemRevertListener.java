@@ -4,19 +4,24 @@ import me.ian.PVPHelper;
 import me.ian.utils.ItemUtils;
 import me.ian.utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.ShulkerBox;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerAttemptPickupItemEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
@@ -90,6 +95,21 @@ public class ItemRevertListener extends ItemUtils implements Listener {
         if (event.getBlockPlaced().getState() instanceof ShulkerBox) {
             ShulkerBox box = (ShulkerBox) event.getBlockPlaced().getState();
             revertInventory(box.getInventory());
+        }
+    }
+
+    // Disable 32ks everywhere but the nether
+    @EventHandler
+    public void onAttack(EntityDamageByEntityEvent event) {
+        if (event.getDamager().getWorld().getEnvironment() != World.Environment.NETHER
+                && event.getDamager() instanceof Player
+                && event.getEntity() instanceof Player
+                && event.getDamage() > 100D) {
+
+            Player damager = (Player) event.getDamager();
+            damager.getInventory().setItem(EquipmentSlot.HAND, new ItemStack(Material.AIR));
+            event.setCancelled(true);
+            Utils.sendMessage(damager, "&c32k's are disabled in this area.");
         }
     }
 }

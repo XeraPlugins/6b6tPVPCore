@@ -12,6 +12,7 @@ public class MixinCreeper {
     @Inject(info = @MethodInfo(_class = EntityCreeper.class, name = "<init>", sig = World.class, rtype = void.class), at = @At(pos = At.Position.TAIL))
     public static void mixinCreeper(CallbackInfo ci) {
         EntityCreeper creeper = (EntityCreeper) ci.getSelf();
+        if (creeper.getWorld().getWorld().getEnvironment() != org.bukkit.World.Environment.NETHER) creeper.die();
         creeper.setNoAI(true);
         creeper.setInvulnerable(true);
     }
