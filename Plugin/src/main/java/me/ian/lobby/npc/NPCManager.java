@@ -4,11 +4,9 @@ import me.ian.PVPHelper;
 import me.ian.utils.ItemUtils;
 import me.ian.utils.NBTUtils;
 import me.ian.utils.Utils;
-import me.txmc.protocolapi.PacketListener;
 import net.minecraft.server.v1_12_R1.EntityPlayer;
 import net.minecraft.server.v1_12_R1.ItemStack;
 import net.minecraft.server.v1_12_R1.NBTTagCompound;
-import net.minecraft.server.v1_12_R1.Packet;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -141,10 +139,12 @@ public class NPCManager implements Listener {
         Player player = event.getPlayer();
         Bukkit.getScheduler().runTaskLater(PVPHelper.INSTANCE, () -> {
             npcs.forEach(npc -> {
-                if (npc.getDistance(player) <= 30) {
-                    if (!npc.getPlayersInRange().contains(player)) {
-                        npc.getPlayersInRange().add(player);
-                        npc.onRangeEnter(player);
+                if (npc.getEntityPlayer().getBukkitEntity().getWorld().equals(player.getWorld())) {
+                    if (npc.getDistance(player) <= 30) {
+                        if (!npc.getPlayersInRange().contains(player)) {
+                            npc.getPlayersInRange().add(player);
+                            npc.onRangeEnter(player);
+                        }
                     }
                 }
             });

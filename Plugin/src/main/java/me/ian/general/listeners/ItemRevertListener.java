@@ -1,9 +1,11 @@
 package me.ian.general.listeners;
 
 import me.ian.PVPHelper;
+import me.ian.mixin.event.ItemCreateEvent;
 import me.ian.utils.ItemUtils;
 import me.ian.utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.ShulkerBox;
@@ -17,6 +19,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerAttemptPickupItemEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -98,18 +101,14 @@ public class ItemRevertListener extends ItemUtils implements Listener {
         }
     }
 
-    // Disable 32ks everywhere but the nether
     @EventHandler
-    public void onAttack(EntityDamageByEntityEvent event) {
-        if (event.getDamager().getWorld().getEnvironment() != World.Environment.NETHER
-                && event.getDamager() instanceof Player
-                && event.getEntity() instanceof Player
-                && event.getDamage() > 100D) {
-
-            Player damager = (Player) event.getDamager();
-            damager.getInventory().setItem(EquipmentSlot.HAND, new ItemStack(Material.AIR));
-            event.setCancelled(true);
-            Utils.sendMessage(damager, "&c32k's are disabled in this area.");
+    public void onCreate(InventoryMoveItemEvent event) {
+        if (event.getDestination().getLocation().getWorld().getEnvironment() != World.Environment.NETHER) {
+            if (isIllegal(event.getItem())) {
+                event.getItem().setAmount(-1);
+                event.getDestination().getLocation().getBlock().setType(Material.AIR);
+                event.getDestination().getViewers().forEach(entity -> entity.sendMessage(ChatColor.RED + "32ks are not enabled in this area."));
+            }
         }
     }
 }
