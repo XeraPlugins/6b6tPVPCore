@@ -38,6 +38,7 @@ public class EventManager {
         listeners.add(new CommandListener());
         listeners.add(new BlockIgniteListener());
         listeners.add(new ItemConsumeListener());
+        listeners.add(new KickListener());
 
         // Create instance of Frame Listeners to register as both a PacketListener and a BukkitListener
         FrameListeners frameListeners = new FrameListeners();
