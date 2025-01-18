@@ -18,6 +18,12 @@ z = 0.5
 yaw = 0.0
 pitch = 0.0
 
+[arena]
+# Frequency in hours for arena clearing (default: 48 hours / 2 days)
+clear_frequency = 48
+# Initial delay in minutes before first arena clear (default: 1 minute)
+initial_delay = 1
+
 # TabList
 # Uses PlaceholderAPI.
 # Please see - https://wiki.placeholderapi.com/users/placeholder-list/#player

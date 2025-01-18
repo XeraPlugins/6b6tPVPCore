@@ -2,6 +2,7 @@ package me.ian;
 
 import co.aikar.timings.TimedChunkGenerator;
 import lombok.Getter;
+import me.ian.arena.ArenaCleaner;
 import me.ian.arena.ArenaManager;
 import me.ian.command.CommandManager;
 import me.ian.duels.DuelManager;
@@ -103,6 +104,7 @@ public class PVPHelper extends JavaPlugin {
         eventRegister.registerEvents();
         npcManager = new NPCManager();
         TaskManager.register(TabListUpdater.class);
+        TaskManager.register(ArenaCleaner.class);
 
         // Make all worlds generate nothing but void chunks
         Bukkit.getWorlds().forEach(world -> {
