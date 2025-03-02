@@ -39,7 +39,16 @@ public class ArenaManager implements Listener, IManagerData<Arena> {
 
         PVPHelper.INSTANCE.registerListener(this);
         PVPHelper.INSTANCE.getLogger().log(Level.INFO, String.format("loaded %s arenas", arenas.size()));
-        ArenaCleaner.initializeScheduler();
+
+        // Clear Arenas
+        for (Arena arena : arenas) {
+            try {
+                arena.clear();
+                PVPHelper.INSTANCE.getLogger().log(Level.INFO, "Successfully cleared arena: " + arena.getName());
+            } catch (Exception e) {
+                PVPHelper.INSTANCE.getLogger().log(Level.SEVERE, "Failed to clear arena: " + arena.getName(), e);
+            }
+        }
     }
 
     @Override

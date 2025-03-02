@@ -2,7 +2,6 @@ package me.ian;
 
 import co.aikar.timings.TimedChunkGenerator;
 import lombok.Getter;
-import me.ian.arena.ArenaCleaner;
 import me.ian.arena.ArenaManager;
 import me.ian.command.CommandManager;
 import me.ian.duels.DuelManager;
